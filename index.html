@@ -84,8 +84,8 @@
       overflow: hidden;
     }
 
-    /* Neon city light bleeding through water. Long cycles and limited travel keep
-       the drift perceptible without reaching speeds that provoke nausea. */
+    /* Neon city light bleeding through water. Fast enough to read as moving,
+       slow enough that nothing lurches. */
     .caustics {
       position: fixed;
       inset: -20%;
@@ -108,7 +108,7 @@
       top: 2%;
       left: 6%;
       background: radial-gradient(circle, color-mix(in oklab, var(--glow) 52%, transparent), transparent 70%);
-      animation: drift-a 70s ease-in-out infinite alternate;
+      animation: drift-a 26s ease-in-out infinite alternate;
     }
 
     .caustics::after {
@@ -117,18 +117,18 @@
       bottom: 2%;
       right: 6%;
       background: radial-gradient(circle, color-mix(in oklab, var(--magenta) 34%, transparent), transparent 70%);
-      animation: drift-b 90s ease-in-out infinite alternate;
+      animation: drift-b 34s ease-in-out infinite alternate;
     }
 
     @keyframes drift-a {
       to {
-        transform: translate3d(11vw, 7vh, 0) scale(1.14);
+        transform: translate3d(16vw, 11vh, 0) scale(1.2);
       }
     }
 
     @keyframes drift-b {
       to {
-        transform: translate3d(-9vw, -8vh, 0) scale(1.18);
+        transform: translate3d(-14vw, -12vh, 0) scale(1.24);
       }
     }
 
@@ -145,7 +145,7 @@
       background-size: 46px 46px;
       -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
       mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
-      animation: grid-pan 120s linear infinite;
+      animation: grid-pan 30s linear infinite;
     }
 
     @keyframes grid-pan {
@@ -164,10 +164,11 @@
       opacity: 0;
       transition: opacity .7s ease;
       mix-blend-mode: screen;
-      background: radial-gradient(20rem 20rem at var(--mx, 50%) var(--my, 50%),
-          color-mix(in oklab, var(--cyan) 26%, transparent) 0%,
-          color-mix(in oklab, var(--glow) 14%, transparent) 38%,
-          transparent 68%);
+      background: radial-gradient(10rem 10rem at var(--mx, 50%) var(--my, 50%),
+          color-mix(in oklab, var(--cyan) 70%, transparent) 0%,
+          color-mix(in oklab, var(--cyan) 38%, transparent) 24%,
+          color-mix(in oklab, var(--glow) 18%, transparent) 50%,
+          transparent 74%);
     }
 
     @media (hover: hover) and (pointer: fine) {
