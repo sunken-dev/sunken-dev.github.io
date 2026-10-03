@@ -139,7 +139,7 @@
       height: 46vmax;
       top: 4%;
       left: 2%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--glow) 30%, transparent) 0%, transparent 70%);
+      background: radial-gradient(circle, color-mix(in oklab, var(--glow) 17%, transparent) 0%, transparent 72%);
       animation: drift-a 22s ease-in-out infinite alternate;
     }
 
@@ -148,7 +148,7 @@
       height: 36vmax;
       bottom: 4%;
       right: 2%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--magenta) 19%, transparent) 0%, transparent 70%);
+      background: radial-gradient(circle, color-mix(in oklab, var(--magenta) 11%, transparent) 0%, transparent 72%);
       animation: drift-b 28s ease-in-out infinite alternate;
     }
 
@@ -414,7 +414,7 @@
     #slogan {
       margin: clamp(.9rem, 2.4vmin, 1.4rem) 0 0;
       font-family: var(--font-terminal);
-      font-size: clamp(.52rem, 2.1vw, .8rem);
+      font-size: clamp(.6rem, 2.5vw, .95rem);
       font-weight: 400;
       letter-spacing: .22em;
       text-indent: .22em;
@@ -500,6 +500,12 @@
       letter-spacing: .16em;
       white-space: nowrap;
       pointer-events: none;
+    }
+
+    /* Live values share the caret's cyan so the readouts scan as instruments */
+    .hud b {
+      font-weight: inherit;
+      color: var(--cyan);
     }
 
     .hud-tl,
@@ -751,9 +757,9 @@
     <p id="slogan">software built to hold at depth</p>
   </main>
 
-  <div class="hud hud-tl" aria-hidden="true">POS 48.2082&deg; N 16.3738&deg; E</div>
-  <div class="hud hud-tr" aria-hidden="true">SNK-07 // PRESSURE OK</div>
-  <div class="hud hud-bl" aria-hidden="true">2026 // SURFACING SOON</div>
+  <div class="hud hud-tl" aria-hidden="true">POS <b>48.2082&deg; N 16.3738&deg; E</b></div>
+  <div class="hud hud-tr" aria-hidden="true">SNK-07 // <b>PRESSURE OK</b></div>
+  <div class="hud hud-bl" aria-hidden="true"><b>2026</b> // SURFACING SOON</div>
 
   <button id="imprint" class="btn" type="button">Imprint</button>
 
