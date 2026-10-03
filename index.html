@@ -64,11 +64,12 @@
       --font-display: 'Chakra Petch', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-      /* Beveled plating: top-left and bottom-right corners cut at 45 degrees.
-         Resolved against each element's own --cut. */
+      /* Resting grid and the brighter copy the sonar reveals */
       --grid-line: #22e3ff14;
       --grid-line-hot: #22e3ff7a;
 
+      /* Beveled plating: top-left and bottom-right corners cut at 45 degrees.
+         Resolved against each element's own --cut. */
       --cut: 9px;
       --chamfer: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)),
           calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
@@ -185,10 +186,10 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity .45s ease;
-      -webkit-mask-image: radial-gradient(6.5rem 6.5rem at var(--mx, 50%) var(--my, 50%),
-          #000 0%, #000 18%, transparent 72%);
-      mask-image: radial-gradient(6.5rem 6.5rem at var(--mx, 50%) var(--my, 50%),
-          #000 0%, #000 18%, transparent 72%);
+      -webkit-mask-image: radial-gradient(10.5rem 10.5rem at var(--mx, 50%) var(--my, 50%),
+          #000 0%, #000 22%, transparent 74%);
+      mask-image: radial-gradient(10.5rem 10.5rem at var(--mx, 50%) var(--my, 50%),
+          #000 0%, #000 22%, transparent 74%);
     }
 
     .sonar::before {
@@ -703,16 +704,16 @@
       if (event.target === dialog) dialog.close();
     });
 
-    // The sweep eases toward the pointer rather than snapping, so the grid
-    // lights up with a trailing lag instead of tracking rigidly.
+    // The sweep eases toward the pointer rather than snapping. The factor is
+    // high enough to feel attached to the cursor, low enough to avoid jitter.
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
       const sonar = document.querySelector('.sonar');
       let targetX = innerWidth / 2, targetY = innerHeight / 2;
       let x = targetX, y = targetY, frame = 0;
 
       const step = () => {
-        x += (targetX - x) * 0.12;
-        y += (targetY - y) * 0.12;
+        x += (targetX - x) * 0.34;
+        y += (targetY - y) * 0.34;
         sonar.style.setProperty('--mx', x + 'px');
         sonar.style.setProperty('--my', y + 'px');
         frame = (Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5)
