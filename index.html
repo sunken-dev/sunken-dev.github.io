@@ -541,14 +541,29 @@
       bottom: max(1.25rem, env(safe-area-inset-bottom));
       z-index: 6;
       padding: .62rem 1.15rem;
+      transition: color .22s ease, background .22s ease, opacity .2s ease;
     }
 
-    /* Anchored top-left so the kraken stays visible while the panel is open */
+    /* The panel opens over this button; leaving it visible lets its corner
+       poke out from behind the plate. Keyed off the open attribute so every
+       exit route is covered without tracking events. */
+    body:has(dialog[open]) #imprint {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Anchored bottom-right, over its own button, so the kraken stays visible */
     dialog {
       position: fixed;
-      top: clamp(1rem, 3vw, 2rem);
-      left: clamp(1rem, 3vw, 2rem);
+      /* The UA sheet puts inset:0 on a modal dialog; without clearing the start
+         edges the box is over-constrained and snaps back to the top-left. */
+      top: auto;
+      left: auto;
+      bottom: clamp(1rem, 3vw, 2rem);
+      right: clamp(1rem, 3vw, 2rem);
       width: min(30rem, calc(100vw - 2rem));
+      max-height: calc(100dvh - 2rem);
+      overflow: auto;
       margin: 0;
       padding: 0;
       border: 0;
