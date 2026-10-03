@@ -3,102 +3,308 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#070b10">
+  <meta name="description" content="Sunken DEV — project page of Dominik Moser.">
   <title>Sunken DEV</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Iceland&display=swap');
 
-    * {
-      font-family: 'Iceland', cursive;
-      text-decoration: none;
-      color: #fff;
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+  <style>
+    :root {
+      --abyss: #070b10;
+      --ink: #eaf6ff;
+      --muted: #8da3b8;
+      --glow: #228dff;
+      --cyan: #22e3ff;
+
+      --font-display: 'Chakra Petch', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+      --pulse: 4s ease-in-out infinite alternate;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
     }
 
     body {
-      background-color: #1c2128;
-      position: relative;
-      min-height: 100%;
+      margin: 0;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(130% 100% at 50% -20%, #16222f 0%, transparent 62%),
+        radial-gradient(110% 80% at 50% 120%, #06202b 0%, transparent 58%),
+        var(--abyss);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      overflow: hidden;
+    }
+
+    /* Light filtering down through water: two slow-drifting blurred pools */
+    .caustics {
+      position: fixed;
+      inset: -20%;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(90px);
+    }
+
+    .caustics::before,
+    .caustics::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+    }
+
+    .caustics::before {
+      width: 55vmax;
+      height: 55vmax;
+      top: 2%;
+      left: 8%;
+      background: radial-gradient(circle, color-mix(in oklab, var(--glow) 55%, transparent), transparent 70%);
+      animation: drift-a 24s ease-in-out infinite alternate;
+    }
+
+    .caustics::after {
+      width: 45vmax;
+      height: 45vmax;
+      bottom: 0%;
+      right: 6%;
+      background: radial-gradient(circle, color-mix(in oklab, var(--cyan) 38%, transparent), transparent 70%);
+      animation: drift-b 31s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift-a {
+      to {
+        transform: translate3d(14vw, 10vh, 0) scale(1.18);
+      }
+    }
+
+    @keyframes drift-b {
+      to {
+        transform: translate3d(-12vw, -12vh, 0) scale(1.25);
+      }
+    }
+
+    /* Film grain keeps the large flat gradients from banding */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: .04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
     #container {
-      height: 98vh;
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-direction: column;
-      flex-wrap: nowrap;
-      justify-content: center;
-      align-items: normal;
-      align-content: normal;
-      z-index: 100;
-    }
-
-    #divider {
-      display: block;
-      align-self: center;
-      margin: 1rem;
-      width: 20rem;
-      height: 0.2rem;
-      background-color: #fff;
-      border: none;
-      animation: neon 1.5s ease-in-out infinite alternate;
+      align-items: center;
+      padding: clamp(1.25rem, 4vw, 2rem);
     }
 
     #logo {
-      align-self: center;
-      color: #fff;
-      animation: neon 1.5s ease-in-out infinite alternate;
+      width: clamp(7rem, 22vmin, 12.5rem);
+      height: auto;
+      color: var(--ink);
+      filter: drop-shadow(0 0 10px #fff6) drop-shadow(0 0 34px var(--glow)) drop-shadow(0 0 70px color-mix(in oklab, var(--glow) 60%, transparent));
+      animation: breathe var(--pulse), float 9s ease-in-out infinite alternate;
+    }
+
+    #divider {
+      width: clamp(9rem, 32vmin, 20rem);
+      height: 2px;
+      margin: clamp(1rem, 3vmin, 1.75rem) 0;
+      border: none;
+      border-radius: 2px;
+      background: linear-gradient(90deg, transparent, var(--glow) 15%, #fff 50%, var(--cyan) 85%, transparent);
+      box-shadow: 0 0 10px #fff9, 0 0 24px var(--glow), 0 0 48px color-mix(in oklab, var(--cyan) 70%, transparent);
+      animation: breathe var(--pulse);
     }
 
     #headline {
-      font-family: 'Iceland', cursive;
-      font-size: 3rem;
       margin: 0;
-      align-self: center;
-      color: #fff;
-      animation: neon 1.5s ease-in-out infinite alternate;
+      font-family: var(--font-display);
+      font-weight: 700;
+      /* Width-driven: the wordmark renders ~7.75x its font size, so vw keeps it inside the viewport */
+      font-size: clamp(1.5rem, 11vw, 5.5rem);
+      line-height: .95;
+      letter-spacing: .14em;
+      text-indent: .14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      filter: drop-shadow(0 0 8px #fff5) drop-shadow(0 0 30px var(--glow));
+      animation: breathe var(--pulse);
     }
 
-    @keyframes neon {
+    @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+      #headline {
+        background: linear-gradient(180deg, #fff 0%, var(--ink) 45%, color-mix(in oklab, var(--cyan) 70%, #fff) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    }
+
+    @keyframes breathe {
       from {
-        filter:
-          drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px #fff) drop-shadow(0 0 30px #228dff) drop-shadow(0 0 60px #228dff)
+        opacity: .88;
       }
 
       to {
-        filter:
-          drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px #fff) drop-shadow(0 0 15px #228dff) drop-shadow(0 0 30px #228dff)
+        opacity: 1;
+      }
+    }
+
+    @keyframes float {
+      to {
+        transform: translateY(-1.1rem);
       }
     }
 
     #imprint {
-      font-size: 1rem;
       position: fixed;
-      bottom: 1rem;
-      right: 1rem;
+      right: max(1.25rem, env(safe-area-inset-right));
+      bottom: max(1.25rem, env(safe-area-inset-bottom));
+      z-index: 2;
+      padding: .5rem .9rem;
+      border: 1px solid #ffffff1f;
+      border-radius: 999px;
+      background: #ffffff08;
+      backdrop-filter: blur(10px);
+      color: var(--muted);
+      font: 500 .75rem/1 var(--font-mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color .25s, border-color .25s, box-shadow .25s;
     }
 
-    #imprint:hover {
-      animation: neon 1.5s ease-in-out infinite alternate;
+    #imprint:hover,
+    #imprint:focus-visible {
+      color: var(--ink);
+      border-color: color-mix(in oklab, var(--glow) 60%, transparent);
+      box-shadow: 0 0 18px color-mix(in oklab, var(--glow) 45%, transparent);
     }
 
-    #modalImprint {
+    dialog {
+      width: min(34rem, calc(100vw - 2.5rem));
+      padding: 0;
+      border: 1px solid #ffffff1f;
+      border-radius: 1rem;
+      background: #0d141ccc;
+      backdrop-filter: blur(22px);
+      color: var(--ink);
+      box-shadow: 0 0 0 1px #0008, 0 30px 80px -20px #000, 0 0 60px -20px var(--glow);
+    }
+
+    dialog::backdrop {
+      background: #040709bf;
+      backdrop-filter: blur(4px);
+    }
+
+    .sheet {
+      padding: clamp(1.5rem, 4vmin, 2.25rem);
+      font-size: .875rem;
+      line-height: 1.7;
+    }
+
+    .sheet h1 {
+      margin: 0 0 1.25rem;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .sheet h2 {
+      margin: 1.75rem 0 .5rem;
+      color: var(--muted);
+      font: 500 .7rem/1 var(--font-mono);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .sheet p,
+    .sheet ul {
+      margin: 0 0 .5rem;
+      color: #c4d5e6;
+    }
+
+    .sheet ul {
+      padding-left: 1.1rem;
+    }
+
+    .sheet a {
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px solid #22e3ff59;
+      transition: border-color .2s, text-shadow .2s;
+    }
+
+    .sheet a:hover,
+    .sheet a:focus-visible {
+      border-bottom-color: var(--cyan);
+      text-shadow: 0 0 14px color-mix(in oklab, var(--cyan) 70%, transparent);
+    }
+
+    #imprint-close {
       position: absolute;
-      z-index: 10000;
-      top: 1rem;
-      left: 3rem;
+      top: .75rem;
+      right: .75rem;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid #ffffff1a;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
     }
 
-  </style>
-  <script type="application/javascript">
-    function toggleModal(modalID) {
-      document.getElementById(modalID).toggleAttribute("hidden")
+    #imprint-close:hover,
+    #imprint-close:focus-visible {
+      color: var(--ink);
+      border-color: #ffffff40;
     }
-  </script>
+
+    :focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <div id="container">
-    <svg id="logo" version="1.0" xmlns="http://www.w3.org/2000/svg" width="200pt" height="200pt"
-      viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
-      <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#fff">
+  <div class="caustics"></div>
+
+  <main id="container">
+    <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sunken DEV kraken logo">
+      <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor">
         <path d="M2360 5011 c-314 -67 -586 -307 -692 -611 -33 -97 -49 -192 -49 -305
         -1 -127 12 -208 48 -308 27 -75 28 -81 17 -214 -8 -102 10 -163 66 -223 l39
         -42 -16 -66 c-9 -37 -18 -69 -19 -71 -8 -10 -244 -42 -349 -48 -139 -6 -188 3
@@ -179,29 +385,49 @@
         -3 90 -30 110 -37 25 -101 20 -132 -11z" />
       </g>
     </svg>
-    <hr id="divider" />
+
+    <hr id="divider">
     <h1 id="headline">Sunken DEV</h1>
-    <a id="imprint" href="#" onclick="toggleModal('modalImprint')">Imprint</a>
-  </div>
-  <div id="modalImprint" hidden="">
-    <h1>Imprint</h1>
-    <p>
-      sunken.dev acts as project page of
-    </p>
-    <ul>
-      <li>Dominik Moser</li>
-    </ul>
-    <p>
-      Feel free to contact us via <a href="https://github.com/sunken-dev">GitHub</a>.
-    </p>
-    <h2>Attribution</h2>
-    <p>
-      Logo: Kraken icons created by Freepik - Flaticon
-    </p>
-    <p>
-      Font: Iceland designed by Cyreal
-    </p>
-  </div>
+  </main>
+
+  <button id="imprint" type="button">Imprint</button>
+
+  <dialog id="imprint-dialog" aria-labelledby="imprint-title">
+    <div class="sheet">
+      <button id="imprint-close" type="button" aria-label="Close">&times;</button>
+      <h1 id="imprint-title">Imprint</h1>
+      <p>
+        sunken.dev acts as project page of
+      </p>
+      <ul>
+        <li>Dominik Moser</li>
+      </ul>
+      <p>
+        Feel free to contact us via <a href="https://github.com/sunken-dev">GitHub</a>.
+      </p>
+      <h2>Attribution</h2>
+      <p>
+        Logo: Kraken icons created by Freepik - Flaticon
+      </p>
+      <p>
+        Font: Chakra Petch designed by Cadson Demak
+      </p>
+    </div>
+  </dialog>
+
+  <div class="grain"></div>
+
+  <script>
+    const dialog = document.getElementById('imprint-dialog');
+
+    document.getElementById('imprint').addEventListener('click', () => dialog.showModal());
+    document.getElementById('imprint-close').addEventListener('click', () => dialog.close());
+
+    // The padding lives on .sheet, so a click landing on <dialog> itself is a backdrop click
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  </script>
 </body>
 
 </html>
