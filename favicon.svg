@@ -1,7 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#05080c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sunken DEV">
+  <style>
+    /* Light scheme is the default so the icon stays legible even where the
+       media query is not honoured. */
+    .plate { fill: #05080c; }
+    .mark  { fill: #22e3ff; }
+
+    @media (prefers-color-scheme: dark) {
+      /* Lift the plate off a black tab strip and brighten the mark. */
+      .plate { fill: #122533; }
+      .mark  { fill: #7af2ff; }
+    }
+  </style>
+  <rect class="plate" width="512" height="512" rx="96"/>
   <g transform="translate(256,256) scale(0.9) translate(-256,-256)">
-    <g transform="translate(0,512) scale(0.1,-0.1)" fill="#22e3ff">
+    <g transform="translate(0,512) scale(0.1,-0.1)" class="mark">
         <path d="M2360 5011 c-314 -67 -586 -307 -692 -611 -33 -97 -49 -192 -49 -305
         -1 -127 12 -208 48 -308 27 -75 28 -81 17 -214 -8 -102 10 -163 66 -223 l39
         -42 -16 -66 c-9 -37 -18 -69 -19 -71 -8 -10 -244 -42 -349 -48 -139 -6 -188 3
