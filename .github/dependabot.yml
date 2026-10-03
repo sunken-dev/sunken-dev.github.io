@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Floating major tags do not advance across majors, so Dependabot raises the bump
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      # One PR for all action bumps instead of one per action
+      actions:
+        patterns:
+          - "*"
