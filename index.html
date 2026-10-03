@@ -29,6 +29,7 @@
   <meta name="twitter:image:alt" content="The Sunken DEV kraken wordmark glowing in neon over a dark grid.">
 
   <link rel="preload" href="fonts/chakra-petch-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/ibm-plex-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <style>
     /* Self-hosted so the page makes no third-party requests. Licences in fonts/. */
@@ -36,6 +37,15 @@
       font-family: 'Chakra Petch';
       src: url('fonts/chakra-petch-600-latin.woff2') format('woff2');
       font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      src: url('fonts/ibm-plex-mono-latin.woff2') format('woff2');
+      font-weight: 400;
       font-style: normal;
       font-display: swap;
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -63,6 +73,7 @@
          and thicken the strokes the neon depends on. */
       --font-display: 'Chakra Petch', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --font-terminal: 'IBM Plex Mono', ui-monospace, monospace;
 
       /* Resting grid and the brighter copy the sonar reveals */
       --grid-line: #22e3ff14;
@@ -398,6 +409,40 @@
       }
     }
 
+    /* Typed by the machine and still waiting: wide terminal tracking with a
+       block caret that cuts on and off rather than fading. */
+    #slogan {
+      margin: clamp(.9rem, 2.4vmin, 1.4rem) 0 0;
+      font-family: var(--font-terminal);
+      font-size: clamp(.52rem, 2.1vw, .8rem);
+      font-weight: 400;
+      letter-spacing: .22em;
+      text-indent: .22em;
+      color: #93b2c6;
+    }
+
+    #slogan::after {
+      content: "";
+      display: inline-block;
+      width: .5ch;
+      height: 1em;
+      margin-left: .1em;
+      vertical-align: -.14em;
+      background: var(--cyan);
+      box-shadow: 0 0 4px var(--cyan), 0 0 12px color-mix(in oklab, var(--cyan) 70%, transparent);
+      animation: caret 1s steps(1) infinite;
+    }
+
+    @keyframes caret {
+      0%, 100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
     /* Chamfered plating. The element's own background forms the 1px edge and
        ::before paints the inset fill, because a border would be cut away by
        clip-path along the diagonals. */
@@ -703,6 +748,7 @@
 
     <hr id="divider">
     <h1 id="headline" data-text="Sunken DEV">Sunken DEV</h1>
+    <p id="slogan">software built to hold at depth</p>
   </main>
 
   <div class="hud hud-tl" aria-hidden="true">POS 48.2082&deg; N 16.3738&deg; E</div>
@@ -730,7 +776,7 @@
           Logo: Kraken icons created by Freepik - Flaticon
         </p>
         <p>
-          Fonts: Chakra Petch designed by Cadson Demak, JetBrains Mono designed by JetBrains. Both under the SIL Open Font License.
+          Fonts: Chakra Petch designed by Cadson Demak, JetBrains Mono designed by JetBrains, IBM Plex Mono designed by Mike Abbink and Bold Monday. All under the SIL Open Font License.
         </p>
       </div>
     </div>
