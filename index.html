@@ -51,15 +51,6 @@
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
 
-    @font-face {
-      font-family: 'JetBrains Mono';
-      src: url('fonts/jetbrains-mono-latin.woff2') format('woff2');
-      font-weight: 400 500;
-      font-style: normal;
-      font-display: swap;
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-
     :root {
       --abyss: #05080c;
       --ink: #eaf6ff;
@@ -69,11 +60,10 @@
       --magenta: #ff2d95;
       --red: #ff2d4b;
 
-      /* Only weight 600 is shipped; asking for bold would synthesise a fake one
-         and thicken the strokes the neon depends on. */
+      /* Only one weight of each face is shipped; asking for a heavier one
+         would synthesise a fake bold and thicken the strokes. */
       --font-display: 'Chakra Petch', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-      --font-terminal: 'IBM Plex Mono', ui-monospace, monospace;
+      --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
       /* Resting grid and the brighter copy the sonar reveals */
       --grid-line: #22e3ff14;
@@ -413,8 +403,8 @@
        block caret that cuts on and off rather than fading. */
     #slogan {
       margin: clamp(.9rem, 2.4vmin, 1.4rem) 0 0;
-      font-family: var(--font-terminal);
-      font-size: clamp(.6rem, 2.5vw, .95rem);
+      font-family: var(--font-mono);
+      font-size: clamp(.62rem, 2.9vw, 1.1rem);
       font-weight: 400;
       letter-spacing: .22em;
       text-indent: .22em;
@@ -453,7 +443,7 @@
       clip-path: var(--chamfer);
       background: #ffffff2b;
       color: var(--muted);
-      font: 500 .75rem/1 var(--font-mono);
+      font: 400 .75rem/1 var(--font-mono);
       letter-spacing: .14em;
       text-transform: uppercase;
       cursor: pointer;
@@ -561,7 +551,7 @@
       left: auto;
       bottom: clamp(1rem, 3vw, 2rem);
       right: clamp(1rem, 3vw, 2rem);
-      width: min(23rem, calc(100vw - 2rem));
+      width: min(26rem, calc(100vw - 2rem));
       max-height: calc(100dvh - 2rem);
       overflow: auto;
       margin: 0;
@@ -609,7 +599,7 @@
     .sheet h2 {
       margin: 1.2rem 0 .35rem;
       color: var(--magenta);
-      font: 500 .68rem/1 var(--font-mono);
+      font: 400 .68rem/1 var(--font-mono);
       letter-spacing: .18em;
       text-transform: uppercase;
       text-shadow: 0 0 12px color-mix(in oklab, var(--magenta) 60%, transparent);
@@ -779,14 +769,14 @@
         <button id="imprint-close" class="btn" type="button" aria-label="Close">&times;</button>
         <h1 id="imprint-title">Imprint</h1>
         <p>
-          sunken.dev is the project page of Dominik Moser.
+          sunken.dev is the project page of Dominik&nbsp;Moser.
         </p>
         <p>
           Get in touch on <a href="https://github.com/sunken-dev">GitHub</a>.
         </p>
         <h2>Typefaces</h2>
         <p>
-          Chakra Petch, IBM Plex Mono and JetBrains Mono, all under the SIL Open Font License.
+          Chakra Petch and IBM Plex Mono, both under the SIL Open Font License.
         </p>
       </div>
     </div>
