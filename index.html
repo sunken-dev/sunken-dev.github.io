@@ -66,6 +66,9 @@
 
       /* Beveled plating: top-left and bottom-right corners cut at 45 degrees.
          Resolved against each element's own --cut. */
+      --grid-line: #22e3ff14;
+      --grid-line-hot: #22e3ff7a;
+
       --cut: 9px;
       --chamfer: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)),
           calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
@@ -123,7 +126,7 @@
       height: 46vmax;
       top: 4%;
       left: 2%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--glow) 62%, transparent) 0%, transparent 68%);
+      background: radial-gradient(circle, color-mix(in oklab, var(--glow) 30%, transparent) 0%, transparent 70%);
       animation: drift-a 22s ease-in-out infinite alternate;
     }
 
@@ -132,7 +135,7 @@
       height: 36vmax;
       bottom: 4%;
       right: 2%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--magenta) 46%, transparent) 0%, transparent 68%);
+      background: radial-gradient(circle, color-mix(in oklab, var(--magenta) 19%, transparent) 0%, transparent 70%);
       animation: drift-b 28s ease-in-out infinite alternate;
     }
 
@@ -156,8 +159,8 @@
       z-index: 1;
       pointer-events: none;
       background-image:
-        linear-gradient(to right, #22e3ff14 1px, transparent 1px),
-        linear-gradient(to bottom, #22e3ff14 1px, transparent 1px);
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
       background-size: 46px 46px;
       -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
       mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
@@ -171,25 +174,37 @@
       }
     }
 
-    /* A submersible lamp trailing the pointer, lighting the grid as it passes.
+    /* Sonar: the grid itself energises where the pointer sweeps. The mask lives
+       on the static wrapper so it stays locked to the cursor while the inner
+       layer keeps panning in step with the grid below it.
        Only on real pointers; touch has nothing to follow. */
-    .lamp {
+    .sonar {
       position: fixed;
       inset: 0;
       z-index: 2;
       pointer-events: none;
       opacity: 0;
-      transition: opacity .7s ease;
-      mix-blend-mode: screen;
-      background: radial-gradient(10rem 10rem at var(--mx, 50%) var(--my, 50%),
-          color-mix(in oklab, var(--cyan) 70%, transparent) 0%,
-          color-mix(in oklab, var(--cyan) 38%, transparent) 24%,
-          color-mix(in oklab, var(--glow) 18%, transparent) 50%,
-          transparent 74%);
+      transition: opacity .45s ease;
+      -webkit-mask-image: radial-gradient(6.5rem 6.5rem at var(--mx, 50%) var(--my, 50%),
+          #000 0%, #000 18%, transparent 72%);
+      mask-image: radial-gradient(6.5rem 6.5rem at var(--mx, 50%) var(--my, 50%),
+          #000 0%, #000 18%, transparent 72%);
+    }
+
+    .sonar::before {
+      content: "";
+      position: absolute;
+      inset: -46px;
+      background-image:
+        linear-gradient(to right, var(--grid-line-hot) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line-hot) 1px, transparent 1px);
+      background-size: 46px 46px;
+      will-change: transform;
+      animation: grid-pan 18s linear infinite;
     }
 
     @media (hover: hover) and (pointer: fine) {
-      body.lamp-on .lamp {
+      body.sonar-on .sonar {
         opacity: 1;
       }
     }
@@ -389,13 +404,13 @@
       isolation: isolate;
       border: 0;
       clip-path: var(--chamfer);
-      background: var(--cyan);
-      color: var(--cyan);
+      background: #ffffff2b;
+      color: var(--muted);
       font: 500 .75rem/1 var(--font-mono);
       letter-spacing: .14em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: color .22s ease;
+      transition: color .22s ease, background .22s ease;
     }
 
     .btn::before {
@@ -410,6 +425,7 @@
 
     .btn:hover,
     .btn:focus-visible {
+      background: var(--cyan);
       color: #04080c;
     }
 
@@ -556,7 +572,7 @@
 <body>
   <div class="caustics"></div>
   <div class="grid"></div>
-  <div class="lamp"></div>
+  <div class="sonar"></div>
 
   <main id="container">
     <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sunken DEV kraken logo">
@@ -687,18 +703,18 @@
       if (event.target === dialog) dialog.close();
     });
 
-    // The lamp eases toward the pointer rather than snapping, so it reads as a
-    // light being carried through water.
+    // The sweep eases toward the pointer rather than snapping, so the grid
+    // lights up with a trailing lag instead of tracking rigidly.
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      const lamp = document.querySelector('.lamp');
+      const sonar = document.querySelector('.sonar');
       let targetX = innerWidth / 2, targetY = innerHeight / 2;
       let x = targetX, y = targetY, frame = 0;
 
       const step = () => {
         x += (targetX - x) * 0.12;
         y += (targetY - y) * 0.12;
-        lamp.style.setProperty('--mx', x + 'px');
-        lamp.style.setProperty('--my', y + 'px');
+        sonar.style.setProperty('--mx', x + 'px');
+        sonar.style.setProperty('--my', y + 'px');
         frame = (Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5)
           ? requestAnimationFrame(step)
           : 0;
@@ -707,14 +723,14 @@
       addEventListener('pointermove', (event) => {
         targetX = event.clientX;
         targetY = event.clientY;
-        document.body.classList.add('lamp-on');
+        document.body.classList.add('sonar-on');
         if (!frame) frame = requestAnimationFrame(step);
       }, { passive: true });
 
       // pointerleave does not bubble, so it has to be bound to the element that
       // spans the viewport rather than to window.
       document.documentElement.addEventListener('pointerleave', () => {
-        document.body.classList.remove('lamp-on');
+        document.body.classList.remove('sonar-on');
       });
     }
   </script>
