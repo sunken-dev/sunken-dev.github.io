@@ -65,6 +65,11 @@
       --font-display: 'Chakra Petch', system-ui, sans-serif;
       --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
+      /* Corner furniture: the readouts and the imprint button share one scale
+         so they read as the same layer of instrumentation. */
+      --hud-size: clamp(.54rem, 1.5vw, .68rem);
+      --hud-tracking: .16em;
+
       /* Resting grid and the brighter copy the sonar reveals */
       --grid-line: #22e3ff14;
       --grid-line-hot: #22e3ff7a;
@@ -443,8 +448,8 @@
       clip-path: var(--chamfer);
       background: #ffffff2b;
       color: var(--muted);
-      font: 400 .75rem/1 var(--font-mono);
-      letter-spacing: .14em;
+      font: 400 var(--hud-size)/1 var(--font-mono);
+      letter-spacing: var(--hud-tracking);
       text-transform: uppercase;
       cursor: pointer;
       transition: color .22s ease, background .22s ease;
@@ -486,8 +491,8 @@
       z-index: 6;
       color: var(--muted);
       opacity: .55;
-      font: 400 clamp(.54rem, 1.5vw, .68rem)/1 var(--font-mono);
-      letter-spacing: .16em;
+      font: 400 var(--hud-size)/1 var(--font-mono);
+      letter-spacing: var(--hud-tracking);
       white-space: nowrap;
       pointer-events: none;
     }
