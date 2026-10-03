@@ -28,13 +28,13 @@
   <meta name="twitter:image" content="https://sunken.dev/og.jpg">
   <meta name="twitter:image:alt" content="The Sunken DEV kraken wordmark glowing in neon over a dark grid.">
 
-  <link rel="preload" href="fonts/audiowide-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/michroma-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <style>
     /* Self-hosted so the page makes no third-party requests. Licences in fonts/. */
     @font-face {
-      font-family: 'Audiowide';
-      src: url('fonts/audiowide-latin.woff2') format('woff2');
+      font-family: 'Michroma';
+      src: url('fonts/michroma-latin.woff2') format('woff2');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
@@ -58,9 +58,9 @@
       --cyan: #22e3ff;
       --magenta: #ff2d95;
 
-      /* Audiowide has a single weight; asking for bold would synthesise a fake one
+      /* Michroma has a single weight; asking for bold would synthesise a fake one
          and thicken the monoline strokes the neon depends on. */
-      --font-display: 'Audiowide', system-ui, sans-serif;
+      --font-display: 'Michroma', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     }
 
@@ -84,8 +84,8 @@
       overflow: hidden;
     }
 
-    /* Neon city light bleeding through water. Deliberately long cycles and small
-       travel so the motion stays below the threshold that triggers nausea. */
+    /* Neon city light bleeding through water. Long cycles and limited travel keep
+       the drift perceptible without reaching speeds that provoke nausea. */
     .caustics {
       position: fixed;
       inset: -20%;
@@ -108,7 +108,7 @@
       top: 2%;
       left: 6%;
       background: radial-gradient(circle, color-mix(in oklab, var(--glow) 52%, transparent), transparent 70%);
-      animation: drift-a 95s ease-in-out infinite alternate;
+      animation: drift-a 70s ease-in-out infinite alternate;
     }
 
     .caustics::after {
@@ -117,18 +117,18 @@
       bottom: 2%;
       right: 6%;
       background: radial-gradient(circle, color-mix(in oklab, var(--magenta) 34%, transparent), transparent 70%);
-      animation: drift-b 120s ease-in-out infinite alternate;
+      animation: drift-b 90s ease-in-out infinite alternate;
     }
 
     @keyframes drift-a {
       to {
-        transform: translate3d(6vw, 4vh, 0) scale(1.08);
+        transform: translate3d(11vw, 7vh, 0) scale(1.14);
       }
     }
 
     @keyframes drift-b {
       to {
-        transform: translate3d(-5vw, -5vh, 0) scale(1.1);
+        transform: translate3d(-9vw, -8vh, 0) scale(1.18);
       }
     }
 
@@ -145,7 +145,7 @@
       background-size: 46px 46px;
       -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
       mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
-      animation: grid-pan 160s linear infinite;
+      animation: grid-pan 120s linear infinite;
     }
 
     @keyframes grid-pan {
@@ -154,11 +154,33 @@
       }
     }
 
+    /* A submersible lamp trailing the pointer, lighting the grid as it passes.
+       Only on real pointers; touch has nothing to follow. */
+    .lamp {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .7s ease;
+      mix-blend-mode: screen;
+      background: radial-gradient(20rem 20rem at var(--mx, 50%) var(--my, 50%),
+          color-mix(in oklab, var(--cyan) 26%, transparent) 0%,
+          color-mix(in oklab, var(--glow) 14%, transparent) 38%,
+          transparent 68%);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      body.lamp-on .lamp {
+        opacity: 1;
+      }
+    }
+
     /* CRT scanlines, barely there */
     .scanlines {
       position: fixed;
       inset: 0;
-      z-index: 3;
+      z-index: 4;
       pointer-events: none;
       opacity: .2;
       background: repeating-linear-gradient(to bottom, #0000 0 2px, #00000038 2px 4px);
@@ -168,7 +190,7 @@
     .grain {
       position: fixed;
       inset: 0;
-      z-index: 4;
+      z-index: 5;
       pointer-events: none;
       opacity: .045;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -176,31 +198,32 @@
 
     #container {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: clamp(1.25rem, 4vw, 2rem);
     }
 
-    /* Neon tube: a near-white core with coloured halos stacked outwards. */
+    /* Neon tube: a near-white core with coloured halos stacked outwards.
+       The kraken carries the mark, so it is sized well above the wordmark. */
     #logo {
-      width: clamp(6rem, 19vmin, 11rem);
+      width: clamp(7.5rem, 26vmin, 15rem);
       height: auto;
       color: #f2fdff;
       filter:
         drop-shadow(0 0 1px #fff)
         drop-shadow(0 0 4px #fff)
-        drop-shadow(0 0 9px var(--cyan))
-        drop-shadow(0 0 18px var(--cyan))
-        drop-shadow(0 0 38px var(--glow));
-      animation: flicker 9s infinite, float 16s ease-in-out infinite alternate;
+        drop-shadow(0 0 10px var(--cyan))
+        drop-shadow(0 0 20px var(--cyan))
+        drop-shadow(0 0 42px var(--glow));
+      animation: pulse 5s ease-in-out infinite, float 16s ease-in-out infinite alternate;
     }
 
     #divider {
-      width: clamp(8rem, 28vmin, 17rem);
+      width: clamp(7rem, 24vmin, 14rem);
       height: 2px;
-      margin: clamp(1rem, 2.6vmin, 1.6rem) 0;
+      margin: clamp(1.1rem, 2.8vmin, 1.7rem) 0;
       border: none;
       background: linear-gradient(90deg, transparent, var(--cyan) 18%, #fff 50%, var(--magenta) 82%, transparent);
       box-shadow:
@@ -208,44 +231,37 @@
         0 0 8px var(--cyan),
         0 0 20px var(--cyan),
         0 0 40px color-mix(in oklab, var(--magenta) 70%, transparent);
-      animation: flicker 9s infinite;
+      animation: pulse 5s ease-in-out infinite;
     }
 
     #headline {
       margin: 0;
       font-family: var(--font-display);
       font-weight: 400;
-      /* The wordmark renders ~7.2x its font size, so vw keeps it inside the viewport */
-      font-size: clamp(1.4rem, 11.5vw, 5rem);
-      line-height: 1.15;
-      letter-spacing: .03em;
-      text-indent: .03em;
+      /* The wordmark renders ~8.6x its font size, so vw keeps it inside the viewport */
+      font-size: clamp(.85rem, 7.5vw, 3rem);
+      line-height: 1.2;
+      letter-spacing: .05em;
+      text-indent: .05em;
       color: #eafcff;
       text-shadow:
         0 0 2px #fff,
         0 0 5px #fff,
         0 0 11px var(--cyan),
-        0 0 21px var(--cyan),
-        0 0 38px var(--glow),
-        0 0 70px var(--glow);
-      animation: flicker 9s infinite;
+        0 0 20px var(--cyan),
+        0 0 34px var(--glow),
+        0 0 62px var(--glow);
+      animation: pulse 5s ease-in-out infinite;
     }
 
-    /* A tube that never quite settles: a slow swell, then a brief stutter. */
-    @keyframes flicker {
-      0%, 36%, 100% {
-        opacity: .94;
+    /* A lit tube breathing, never cutting out: the floor stays bright enough
+       that the sign always reads as powered. */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: .86;
       }
 
       50% {
-        opacity: 1;
-      }
-
-      88%, 91% {
-        opacity: .48;
-      }
-
-      89.5%, 94% {
         opacity: 1;
       }
     }
@@ -260,7 +276,7 @@
       position: fixed;
       right: max(1.25rem, env(safe-area-inset-right));
       bottom: max(1.25rem, env(safe-area-inset-bottom));
-      z-index: 5;
+      z-index: 6;
       padding: .5rem .9rem;
       border: 1px solid color-mix(in oklab, var(--cyan) 30%, transparent);
       border-radius: 0;
@@ -312,9 +328,9 @@
     .sheet h1 {
       margin: 0 0 1.1rem;
       font-family: var(--font-display);
-      font-size: 1.15rem;
+      font-size: .95rem;
       font-weight: 400;
-      letter-spacing: .05em;
+      letter-spacing: .08em;
       color: #eafcff;
       text-shadow: 0 0 2px #fff, 0 0 10px var(--cyan), 0 0 24px var(--cyan);
     }
@@ -398,6 +414,7 @@
 <body>
   <div class="caustics"></div>
   <div class="grid"></div>
+  <div class="lamp"></div>
 
   <main id="container">
     <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sunken DEV kraken logo">
@@ -507,7 +524,7 @@
         Logo: Kraken icons created by Freepik - Flaticon
       </p>
       <p>
-        Fonts: Audiowide designed by Astigmatic, JetBrains Mono designed by JetBrains. Both under the SIL Open Font License.
+        Fonts: Michroma designed by Vernon Adams, JetBrains Mono designed by JetBrains. Both under the SIL Open Font License.
       </p>
     </div>
   </dialog>
@@ -525,6 +542,37 @@
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) dialog.close();
     });
+
+    // The lamp eases toward the pointer rather than snapping, so it reads as a
+    // light being carried through water.
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const lamp = document.querySelector('.lamp');
+      let targetX = innerWidth / 2, targetY = innerHeight / 2;
+      let x = targetX, y = targetY, frame = 0;
+
+      const step = () => {
+        x += (targetX - x) * 0.12;
+        y += (targetY - y) * 0.12;
+        lamp.style.setProperty('--mx', x + 'px');
+        lamp.style.setProperty('--my', y + 'px');
+        frame = (Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5)
+          ? requestAnimationFrame(step)
+          : 0;
+      };
+
+      addEventListener('pointermove', (event) => {
+        targetX = event.clientX;
+        targetY = event.clientY;
+        document.body.classList.add('lamp-on');
+        if (!frame) frame = requestAnimationFrame(step);
+      }, { passive: true });
+
+      // pointerleave does not bubble, so it has to be bound to the element that
+      // spans the viewport rather than to window.
+      document.documentElement.addEventListener('pointerleave', () => {
+        document.body.classList.remove('lamp-on');
+      });
+    }
   </script>
 </body>
 
