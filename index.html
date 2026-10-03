@@ -561,7 +561,7 @@
       left: auto;
       bottom: clamp(1rem, 3vw, 2rem);
       right: clamp(1rem, 3vw, 2rem);
-      width: min(30rem, calc(100vw - 2rem));
+      width: min(23rem, calc(100vw - 2rem));
       max-height: calc(100dvh - 2rem);
       overflow: auto;
       margin: 0;
@@ -586,20 +586,20 @@
     .sheet {
       --cut: 14px;
       clip-path: var(--chamfer);
-      padding: clamp(1.25rem, 4vmin, 1.9rem);
+      padding: clamp(1.1rem, 3.2vmin, 1.5rem);
       background: #060d14f2;
       backdrop-filter: blur(22px);
-      font-size: .82rem;
-      line-height: 1.7;
+      font-size: .78rem;
+      line-height: 1.65;
       /* The imprint is information worth copying, unlike the hero */
       -webkit-user-select: text;
       user-select: text;
     }
 
     .sheet h1 {
-      margin: 0 0 1.1rem;
+      margin: 0 0 .9rem;
       font-family: var(--font-display);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: .08em;
       color: #eafcff;
@@ -607,7 +607,7 @@
     }
 
     .sheet h2 {
-      margin: 1.5rem 0 .4rem;
+      margin: 1.2rem 0 .35rem;
       color: var(--magenta);
       font: 500 .68rem/1 var(--font-mono);
       letter-spacing: .18em;
@@ -615,14 +615,9 @@
       text-shadow: 0 0 12px color-mix(in oklab, var(--magenta) 60%, transparent);
     }
 
-    .sheet p,
-    .sheet ul {
+    .sheet p {
       margin: 0 0 .5rem;
       color: #c4d5e6;
-    }
-
-    .sheet ul {
-      padding-left: 1.1rem;
     }
 
     .sheet a {
@@ -784,20 +779,14 @@
         <button id="imprint-close" class="btn" type="button" aria-label="Close">&times;</button>
         <h1 id="imprint-title">Imprint</h1>
         <p>
-          sunken.dev acts as project page of
-        </p>
-        <ul>
-          <li>Dominik Moser</li>
-        </ul>
-        <p>
-          Feel free to contact us via <a href="https://github.com/sunken-dev">GitHub</a>.
-        </p>
-        <h2>Attribution</h2>
-        <p>
-          Logo: Kraken icons created by Freepik - Flaticon
+          sunken.dev is the project page of Dominik Moser.
         </p>
         <p>
-          Fonts: Chakra Petch designed by Cadson Demak, JetBrains Mono designed by JetBrains, IBM Plex Mono designed by Mike Abbink and Bold Monday. All under the SIL Open Font License.
+          Get in touch on <a href="https://github.com/sunken-dev">GitHub</a>.
+        </p>
+        <h2>Typefaces</h2>
+        <p>
+          Chakra Petch, IBM Plex Mono and JetBrains Mono, all under the SIL Open Font License.
         </p>
       </div>
     </div>
