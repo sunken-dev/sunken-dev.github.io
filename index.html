@@ -466,7 +466,13 @@
     .btn {
       position: relative;
       isolation: isolate;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 0;
+      padding: .7em 1.35em;
+      min-height: 1.5rem;
+      text-decoration: none;
       clip-path: var(--chamfer);
       background: #ffffff2b;
       color: var(--muted);
@@ -474,7 +480,7 @@
       letter-spacing: var(--hud-tracking);
       text-transform: uppercase;
       cursor: pointer;
-      transition: color .22s ease, background .22s ease;
+      transition: color .22s ease, background .22s ease, opacity .2s ease;
     }
 
     .btn::before {
@@ -543,20 +549,21 @@
       right: max(var(--hud-inset), env(safe-area-inset-right));
     }
 
-    #imprint {
+    .actions {
       position: fixed;
       right: max(var(--hud-inset), env(safe-area-inset-right));
       bottom: max(var(--hud-inset), env(safe-area-inset-bottom));
       z-index: 6;
-      padding: .7em 1.35em;
-      min-height: 1.5rem;
-      transition: color .22s ease, background .22s ease, opacity .2s ease;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      transition: opacity .2s ease;
     }
 
     /* The panel opens over this button; leaving it visible lets its corner
        poke out from behind the plate. Keyed off the open attribute so every
        exit route is covered without tracking events. */
-    body:has(dialog[open]) #imprint {
+    body:has(dialog[open]) .actions {
       opacity: 0;
       pointer-events: none;
     }
@@ -781,7 +788,10 @@
   <div class="hud hud-tr" aria-hidden="true">SNK-07 // <b>PRESSURE OK</b></div>
   <div class="hud hud-bl" aria-hidden="true"><b>2026</b> // SURFACING SOON</div>
 
-  <button id="imprint" class="btn" type="button">Imprint</button>
+  <nav class="actions">
+    <a class="btn" href="https://github.com/sunken-dev">Projects</a>
+    <button id="imprint" class="btn" type="button">Imprint</button>
+  </nav>
 
   <dialog id="imprint-dialog" aria-labelledby="imprint-title">
     <div class="panel">
