@@ -204,8 +204,7 @@
 
     /* Sonar: the grid itself energises where the pointer sweeps. The mask lives
        on the static wrapper so it stays locked to the cursor while the inner
-       layer keeps panning in step with the grid below it.
-       Only on real pointers; touch has nothing to follow. */
+       layer keeps panning in step with the grid below it. */
     .sonar {
       position: fixed;
       inset: 0;
@@ -231,10 +230,8 @@
       animation: grid-pan 18s linear infinite;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      body.sonar-on .sonar {
-        opacity: 1;
-      }
+    body.sonar-on .sonar {
+      opacity: 1;
     }
 
     /* CRT scanlines, barely there */
@@ -826,34 +823,59 @@
 
     // The sweep eases toward the pointer rather than snapping. The factor is
     // high enough to feel attached to the cursor, low enough to avoid jitter.
-    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      const sonar = document.querySelector('.sonar');
-      let targetX = innerWidth / 2, targetY = innerHeight / 2;
-      let x = targetX, y = targetY, frame = 0;
+    const sonar = document.querySelector('.sonar');
+    let targetX = innerWidth / 2, targetY = innerHeight / 2;
+    let x = targetX, y = targetY, frame = 0, fade = 0;
 
-      const step = () => {
-        x += (targetX - x) * 0.34;
-        y += (targetY - y) * 0.34;
-        sonar.style.setProperty('--mx', x + 'px');
-        sonar.style.setProperty('--my', y + 'px');
-        frame = (Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5)
-          ? requestAnimationFrame(step)
-          : 0;
-      };
+    const paint = () => {
+      sonar.style.setProperty('--mx', x + 'px');
+      sonar.style.setProperty('--my', y + 'px');
+    };
 
-      addEventListener('pointermove', (event) => {
-        targetX = event.clientX;
-        targetY = event.clientY;
-        document.body.classList.add('sonar-on');
-        if (!frame) frame = requestAnimationFrame(step);
-      }, { passive: true });
+    const step = () => {
+      x += (targetX - x) * 0.34;
+      y += (targetY - y) * 0.34;
+      paint();
+      frame = (Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5)
+        ? requestAnimationFrame(step)
+        : 0;
+    };
 
-      // pointerleave does not bubble, so it has to be bound to the element that
-      // spans the viewport rather than to window.
-      document.documentElement.addEventListener('pointerleave', () => {
-        document.body.classList.remove('sonar-on');
-      });
-    }
+    // snap places the sweep directly under a new contact; easing it in from
+    // wherever the last pointer sat would drag a streak across the screen.
+    const track = (event, snap) => {
+      clearTimeout(fade);
+      targetX = event.clientX;
+      targetY = event.clientY;
+      if (snap) {
+        x = targetX;
+        y = targetY;
+        paint();
+      }
+      document.body.classList.add('sonar-on');
+      if (!frame) frame = requestAnimationFrame(step);
+    };
+
+    const dim = (delay) => {
+      clearTimeout(fade);
+      fade = setTimeout(() => document.body.classList.remove('sonar-on'), delay);
+    };
+
+    // A finger has no hover state, so the sweep is placed on contact, follows
+    // the drag, and fades once the touch ends.
+    addEventListener('pointerdown', (e) => track(e, e.pointerType !== 'mouse'), { passive: true });
+    addEventListener('pointermove', (e) => track(e, false), { passive: true });
+    addEventListener('pointerup', (e) => {
+      if (e.pointerType !== 'mouse') dim(500);
+    }, { passive: true });
+    addEventListener('pointercancel', () => dim(200), { passive: true });
+
+    // pointerleave does not bubble, so it has to be bound to the element that
+    // spans the viewport rather than to window. Touch fires it on release too,
+    // which would cut the fade short, so it is limited to the mouse.
+    document.documentElement.addEventListener('pointerleave', (e) => {
+      if (e.pointerType === 'mouse') dim(0);
+    });
   </script>
 </body>
 
