@@ -588,7 +588,8 @@
       bottom: clamp(1rem, 3vw, 2rem);
       right: clamp(1rem, 3vw, 2rem);
       width: min(26rem, calc(100vw - 2rem));
-      max-height: calc(100dvh - 2rem);
+      max-height: calc(100vh - 2rem);
+      max-height: calc(100svh - 2rem);
       overflow: auto;
       touch-action: pan-y pinch-zoom;
       margin: 0;
@@ -718,7 +719,11 @@
       width: fit-content;
       max-width: min(50rem, calc(100vw - 2rem));
       height: fit-content;
-      max-height: calc(100dvh - 2rem);
+      /* svh, not dvh: with a toolbar on screen the dynamic viewport is taller
+         than what is actually visible, and a fixed panel sized to it spills
+         off the screen so the page pans instead of the panel scrolling. */
+      max-height: calc(100vh - 2rem);
+      max-height: calc(100svh - 2rem);
     }
 
     .projects {
