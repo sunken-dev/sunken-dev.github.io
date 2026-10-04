@@ -825,7 +825,10 @@
 
     /* Side by side needs room for a readable preview and a readable column;
        below that the entry stacks: preview, name, description, tags, live. */
-    @media (max-width: 30rem) {
+    /* Set well above phone width on purpose: Android display scaling widens
+       the CSS viewport, so a phone can report far more than its nominal size
+       and a tighter breakpoint would leave it side by side. */
+    @media (max-width: 40rem) {
       .projects li {
         flex-direction: column;
       }
