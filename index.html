@@ -932,8 +932,11 @@
     // The link stays a real link so it still reaches GitHub without scripting;
     // the dialog is the enhancement on top of it.
     const projectsLink = document.getElementById('projects-link');
+    // Built at deploy time, so it carries the real social preview where one is
+    // set. The anonymous REST API cannot expose that, and is only a fallback.
+    const BUILT = 'projects.json';
     const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
-    const CACHE = 'sunken:projects:v2';
+    const CACHE = 'sunken:projects:v3';
     let loaded = false;
 
     const status = (text, href) => {
@@ -962,7 +965,7 @@
 
         const shot = document.createElement('img');
         shot.className = 'shot';
-        shot.src = 'https://opengraph.githubassets.com/1/' + repo.slug;
+        shot.src = repo.image;
         shot.alt = '';
         // not lazy: the list is only built once the panel is already open
         shot.decoding = 'async';
@@ -1023,21 +1026,36 @@
         // private mode can refuse storage; fall through to the network
       }
 
-      try {
+      // The REST API has no social-preview field, so this path can only point at
+      // GitHub's generated card.
+      const fromApi = async () => {
         const response = await fetch(REPOS, { headers: { Accept: 'application/vnd.github+json' } });
         if (!response.ok) throw new Error(response.status);
-        const repos = (await response.json())
+        return (await response.json())
           // forks are someone else's work, and this page is not a project
           .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io')
           .map((repo) => ({
-            slug: encodeURIComponent(repo.owner.login) + '/' + encodeURIComponent(repo.name),
             name: repo.name,
             description: repo.description,
             url: repo.html_url,
             homepage: repo.homepage,
+            image: 'https://opengraph.githubassets.com/1/'
+              + encodeURIComponent(repo.owner.login) + '/' + encodeURIComponent(repo.name),
+            customImage: false,
             language: repo.language,
             topics: repo.topics || []
           }));
+      };
+
+      const fromBuild = async () => {
+        const response = await fetch(BUILT, { cache: 'no-cache' });
+        if (!response.ok) return null;
+        const repos = await response.json();
+        return Array.isArray(repos) ? repos : null;
+      };
+
+      try {
+        const repos = (await fromBuild().catch(() => null)) || (await fromApi());
         try {
           sessionStorage.setItem(CACHE, JSON.stringify(repos));
         } catch (ignored) {

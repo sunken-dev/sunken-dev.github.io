@@ -37,6 +37,40 @@ jobs:
           persist-credentials: false
       - name: Setup Pages
         uses: actions/configure-pages@v6
+      # The real social preview is only exposed through the GraphQL API, which
+      # requires a token, so the list is resolved here and published as static
+      # JSON rather than fetched from the browser. Failure is tolerated: the
+      # page falls back to the anonymous REST API.
+      - name: Collect projects
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # shellcheck disable=SC2016  # $org is a GraphQL variable, not a shell one
+          gh api graphql -f query='
+            query($org: String!) {
+              organization(login: $org) {
+                repositories(first: 100, privacy: PUBLIC, orderBy: {field: UPDATED_AT, direction: DESC}) {
+                  nodes {
+                    name description url homepageUrl isFork
+                    openGraphImageUrl usesCustomOpenGraphImage
+                    primaryLanguage { name }
+                    repositoryTopics(first: 10) { nodes { topic { name } } }
+                  }
+                }
+              }
+            }' -F org=sunken-dev --jq '
+              [ .data.organization.repositories.nodes[]
+                | select(.isFork | not)
+                | select(.name != "sunken-dev.github.io")
+                | { name, description, url,
+                    homepage: .homepageUrl,
+                    image: .openGraphImageUrl,
+                    customImage: .usesCustomOpenGraphImage,
+                    language: (.primaryLanguage.name // null),
+                    topics: [ .repositoryTopics.nodes[].topic.name ] } ]' > projects.json
+          echo "collected $(jq length projects.json) projects"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
