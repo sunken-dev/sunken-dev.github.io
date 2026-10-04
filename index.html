@@ -660,7 +660,7 @@
       user-select: text;
     }
 
-    .sheet h1 {
+    .sheet > h2 {
       margin: 0 0 .9rem;
       font-family: var(--font-display);
       font-size: 1rem;
@@ -670,7 +670,7 @@
       text-shadow: 0 0 2px #fff, 0 0 10px var(--cyan), 0 0 24px var(--cyan);
     }
 
-    .sheet h2 {
+    .sheet > h3 {
       margin: 1.2rem 0 .35rem;
       color: var(--magenta);
       font: 400 .68rem/1 var(--font-mono);
@@ -843,9 +843,11 @@
       overflow: hidden;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: .5em;
       --cut: 6px;
       clip-path: var(--chamfer);
+      min-height: 1.5rem;
       padding: .45em .95em;
       border: 0;
       background: var(--magenta);
@@ -907,6 +909,12 @@
         background: #ff6f8f;
         color: #1b0209;
       }
+    }
+
+    /* clip-path removes an outline, so focus is drawn inside the plate */
+    .projects .live:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px #11030a;
     }
 
     .projects .live-wrap:hover .live::before {
@@ -1085,14 +1093,14 @@
     <div class="panel">
       <div class="sheet">
         <button id="imprint-close" class="btn sheet-close" type="button" aria-label="Close">&times;</button>
-        <h1 id="imprint-title" class="glitch" data-text="Imprint">Imprint</h1>
+        <h2 id="imprint-title" class="glitch" data-text="Imprint">Imprint</h2>
         <p>
           sunken.dev is the project page of Dominik&nbsp;Moser.
         </p>
         <p>
           Get in touch on <a href="https://github.com/sunken-dev">GitHub</a>.
         </p>
-        <h2>Credits</h2>
+        <h3>Credits</h3>
         <p>
           Kraken icon by <a href="https://www.flaticon.com/free-icons/kraken">Freepik &mdash; Flaticon</a>.
         </p>
@@ -1107,7 +1115,7 @@
     <div class="panel">
       <div class="sheet">
         <button id="projects-close" class="btn sheet-close" type="button" aria-label="Close">&times;</button>
-        <h1 id="projects-title" class="glitch" data-text="Projects">Projects</h1>
+        <h2 id="projects-title" class="glitch" data-text="Projects">Projects</h2>
         <ul id="projects-list" class="projects">
           <li class="projects-status">Loading&hellip;</li>
         </ul>
@@ -1220,6 +1228,8 @@
           live.className = 'live';
           live.href = repo.homepage;
           live.textContent = 'Live';
+          // "Live" alone is meaningless out of context in a link list
+          live.setAttribute('aria-label', `${repo.name} live site`);
 
           // the wrapper exists purely to carry a glow the clip would remove
           const halo = document.createElement('span');
