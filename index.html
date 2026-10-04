@@ -320,8 +320,12 @@
 
     /* Chromatic glitch: two tinted copies stacked over the real text, clipped
        away except for a short burst where horizontal slices split apart. */
-    #headline::before,
-    #headline::after {
+    .glitch {
+      position: relative;
+    }
+
+    .glitch::before,
+    .glitch::after {
       content: attr(data-text);
       position: absolute;
       top: 0;
@@ -333,13 +337,13 @@
          would blow out to white and the channel split would vanish. */
     }
 
-    #headline::before {
+    .glitch::before {
       color: var(--cyan);
       text-shadow: 0 0 6px var(--cyan);
       animation: glitch-cyan 4.5s steps(1) infinite;
     }
 
-    #headline::after {
+    .glitch::after {
       color: var(--red);
       text-shadow: 0 0 6px var(--red);
       animation: glitch-red 4.5s steps(1) infinite;
@@ -785,15 +789,6 @@
       transition: background .22s ease, color .22s ease;
     }
 
-    .projects .live::before {
-      content: "";
-      width: .45em;
-      height: .45em;
-      border-radius: 50%;
-      background: currentColor;
-      animation: live 1.8s ease-in-out infinite;
-    }
-
     .projects .live:hover,
     .projects .live:focus-visible {
       background: var(--cyan);
@@ -851,8 +846,8 @@
         opacity: 1;
       }
 
-      #headline::before,
-      #headline::after {
+      .glitch::before,
+      .glitch::after {
         display: none;
       }
     }
@@ -949,7 +944,7 @@
     </svg>
 
     <hr id="divider">
-    <h1 id="headline" data-text="Sunken DEV">Sunken DEV</h1>
+    <h1 id="headline" class="glitch" data-text="Sunken DEV">Sunken DEV</h1>
     <p id="slogan">software built to hold at depth</p>
   </main>
 
@@ -966,7 +961,7 @@
     <div class="panel">
       <div class="sheet">
         <button id="imprint-close" class="btn sheet-close" type="button" aria-label="Close">&times;</button>
-        <h1 id="imprint-title">Imprint</h1>
+        <h1 id="imprint-title" class="glitch" data-text="Imprint">Imprint</h1>
         <p>
           sunken.dev is the project page of Dominik&nbsp;Moser.
         </p>
@@ -988,7 +983,7 @@
     <div class="panel">
       <div class="sheet">
         <button id="projects-close" class="btn sheet-close" type="button" aria-label="Close">&times;</button>
-        <h1 id="projects-title">Projects</h1>
+        <h1 id="projects-title" class="glitch" data-text="Projects">Projects</h1>
         <ul id="projects-list" class="projects">
           <li class="projects-status">Loading&hellip;</li>
         </ul>
