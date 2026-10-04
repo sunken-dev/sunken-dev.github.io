@@ -830,9 +830,11 @@
        on top of it. */
     .projects .live-wrap:focus-within,
     .projects .live-wrap:where(:hover) {
+      /* Plain sRGB stops: interpolating these against an oklab() colour
+         swings the hue through green at the midpoint. */
       filter:
-        drop-shadow(0 0 6px color-mix(in oklab, var(--magenta) 80%, transparent))
-        drop-shadow(0 0 18px color-mix(in oklab, var(--magenta) 55%, transparent));
+        drop-shadow(0 0 6px #ff2d95cc)
+        drop-shadow(0 0 18px #ff2d958c);
       animation: alert-glow .9s ease-in-out infinite;
     }
 
@@ -841,14 +843,14 @@
       0%,
       100% {
         filter:
-          drop-shadow(0 0 4px color-mix(in oklab, var(--magenta) 65%, transparent))
-          drop-shadow(0 0 12px color-mix(in oklab, var(--magenta) 40%, transparent));
+          drop-shadow(0 0 4px #ff2d95a6)
+          drop-shadow(0 0 12px #ff2d9566);
       }
 
       50% {
         filter:
-          drop-shadow(0 0 9px var(--magenta))
-          drop-shadow(0 0 24px color-mix(in oklab, var(--magenta) 70%, transparent));
+          drop-shadow(0 0 9px #ff2d95)
+          drop-shadow(0 0 24px #ff2d95b3);
       }
     }
 
