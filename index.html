@@ -650,7 +650,65 @@
       text-shadow: 0 0 14px color-mix(in oklab, var(--cyan) 70%, transparent);
     }
 
-    #imprint-close {
+    #projects-dialog {
+      width: min(30rem, calc(100vw - 2rem));
+    }
+
+    .projects {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: .6rem;
+    }
+
+    .projects li {
+      padding: .6rem .7rem;
+      border: 1px solid #ffffff14;
+      background: #ffffff06;
+    }
+
+    .projects h3 {
+      margin: 0 0 .25rem;
+      font-family: var(--font-display);
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+
+    .projects h3 a {
+      border: 0;
+    }
+
+    .projects p {
+      margin: 0;
+      color: #c4d5e6;
+    }
+
+    .projects .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem .5rem;
+      margin-top: .4rem;
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .projects .meta a {
+      color: var(--magenta);
+      border-bottom-color: #ff2d9559;
+    }
+
+    .projects-status {
+      border: 0 !important;
+      background: none !important;
+      padding: 0 !important;
+      color: var(--muted);
+    }
+
+    .sheet-close {
       --cut: 6px;
       position: absolute;
       top: .7rem;
@@ -789,14 +847,14 @@
   <div class="hud hud-bl" aria-hidden="true"><b>2026</b> // SURFACING SOON</div>
 
   <nav class="actions">
-    <a class="btn" href="https://github.com/sunken-dev">Projects</a>
+    <a id="projects-link" class="btn" href="https://github.com/sunken-dev">Projects</a>
     <button id="imprint" class="btn" type="button">Imprint</button>
   </nav>
 
   <dialog id="imprint-dialog" aria-labelledby="imprint-title">
     <div class="panel">
       <div class="sheet">
-        <button id="imprint-close" class="btn" type="button" aria-label="Close">&times;</button>
+        <button id="imprint-close" class="btn sheet-close" type="button" aria-label="Close">&times;</button>
         <h1 id="imprint-title">Imprint</h1>
         <p>
           sunken.dev is the project page of Dominik&nbsp;Moser.
@@ -815,18 +873,147 @@
     </div>
   </dialog>
 
+  <dialog id="projects-dialog" aria-labelledby="projects-title">
+    <div class="panel">
+      <div class="sheet">
+        <button id="projects-close" class="btn sheet-close" type="button" aria-label="Close">&times;</button>
+        <h1 id="projects-title">Projects</h1>
+        <ul id="projects-list" class="projects">
+          <li class="projects-status">Loading&hellip;</li>
+        </ul>
+      </div>
+    </div>
+  </dialog>
+
   <div class="scanlines"></div>
   <div class="grain"></div>
 
   <script>
     const dialog = document.getElementById('imprint-dialog');
 
+    const projects = document.getElementById('projects-dialog');
+    const projectsList = document.getElementById('projects-list');
+
     document.getElementById('imprint').addEventListener('click', () => dialog.showModal());
     document.getElementById('imprint-close').addEventListener('click', () => dialog.close());
+    document.getElementById('projects-close').addEventListener('click', () => projects.close());
 
     // The padding lives on .sheet, so a click landing on <dialog> itself is a backdrop click
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) dialog.close();
+    for (const panel of [dialog, projects]) {
+      panel.addEventListener('click', (event) => {
+        if (event.target === panel) panel.close();
+      });
+    }
+
+    // The link stays a real link so it still reaches GitHub without scripting;
+    // the dialog is the enhancement on top of it.
+    const projectsLink = document.getElementById('projects-link');
+    const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
+    const CACHE = 'sunken:projects';
+    let loaded = false;
+
+    const status = (text, href) => {
+      const li = document.createElement('li');
+      li.className = 'projects-status';
+      li.textContent = text;
+      if (href) {
+        li.append(' ');
+        const a = document.createElement('a');
+        a.href = href;
+        a.textContent = 'Open on GitHub';
+        li.append(a);
+      }
+      projectsList.replaceChildren(li);
+    };
+
+    // Everything is built as nodes with textContent; nothing from the API is
+    // ever parsed as markup.
+    const render = (repos) => {
+      if (!repos.length) {
+        status('No public projects yet.');
+        return;
+      }
+      const items = repos.map((repo) => {
+        const li = document.createElement('li');
+
+        const title = document.createElement('h3');
+        const link = document.createElement('a');
+        link.href = repo.url;
+        link.textContent = repo.name;
+        title.append(link);
+        li.append(title);
+
+        if (repo.description) {
+          const text = document.createElement('p');
+          text.textContent = repo.description;
+          li.append(text);
+        }
+
+        const meta = document.createElement('p');
+        meta.className = 'meta';
+        for (const tag of [repo.language, ...repo.topics].filter(Boolean)) {
+          const chip = document.createElement('span');
+          chip.textContent = tag;
+          meta.append(chip);
+        }
+        if (repo.homepage) {
+          const live = document.createElement('a');
+          live.href = repo.homepage;
+          live.textContent = 'Live';
+          meta.append(live);
+        }
+        if (meta.childElementCount) li.append(meta);
+
+        return li;
+      });
+      projectsList.replaceChildren(...items);
+    };
+
+    const load = async () => {
+      if (loaded) return;
+      loaded = true;
+
+      try {
+        const cached = sessionStorage.getItem(CACHE);
+        if (cached) {
+          render(JSON.parse(cached));
+          return;
+        }
+      } catch (ignored) {
+        // private mode can refuse storage; fall through to the network
+      }
+
+      try {
+        const response = await fetch(REPOS, { headers: { Accept: 'application/vnd.github+json' } });
+        if (!response.ok) throw new Error(response.status);
+        const repos = (await response.json())
+          // forks are someone else's work, and this page is not a project
+          .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io')
+          .map((repo) => ({
+            name: repo.name,
+            description: repo.description,
+            url: repo.html_url,
+            homepage: repo.homepage,
+            language: repo.language,
+            topics: repo.topics || []
+          }));
+        try {
+          sessionStorage.setItem(CACHE, JSON.stringify(repos));
+        } catch (ignored) {
+          // caching is an optimisation, not a requirement
+        }
+        render(repos);
+      } catch (error) {
+        // unauthenticated callers get 60 requests an hour, shared per address
+        loaded = false;
+        status('Could not reach GitHub.', projectsLink.href);
+      }
+    };
+
+    projectsLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      projects.showModal();
+      load();
     });
 
     // The sweep eases toward the pointer rather than snapping. The factor is
