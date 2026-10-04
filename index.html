@@ -823,6 +823,19 @@
       color: #a9c6d8;
     }
 
+    /* Side by side needs room for a readable preview and a readable column;
+       below that the entry stacks: preview, name, description, tags, live. */
+    @media (max-width: 30rem) {
+      .projects li {
+        flex-direction: column;
+      }
+
+      .projects .frame {
+        width: 100%;
+        align-self: stretch;
+      }
+    }
+
     /* clip-path cuts off any glow on the element itself, so the halo lives on
        a wrapper and the plate only changes its own fill. */
     .projects .live-wrap {
