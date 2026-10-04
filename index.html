@@ -593,13 +593,6 @@
       background: transparent;
     }
 
-    .panel {
-      --cut: 14px;
-      clip-path: var(--chamfer);
-      background: color-mix(in oklab, var(--cyan) 50%, transparent);
-      padding: 1px;
-    }
-
     .sheet {
       --cut: 14px;
       clip-path: var(--chamfer);
@@ -932,9 +925,10 @@
     // The link stays a real link so it still reaches GitHub without scripting;
     // the dialog is the enhancement on top of it.
     const projectsLink = document.getElementById('projects-link');
-    // Built at deploy time, so it carries the real social preview where one is
-    // set. The anonymous REST API cannot expose that, and is only a fallback.
-    const BUILT = 'projects.json';
+    // Published to the orphan data branch by the refresh workflow, which reads
+    // each repository's og:image tag. The anonymous REST API cannot expose that,
+    // so it is only a fallback.
+    const BUILT = 'https://raw.githubusercontent.com/sunken-dev/sunken-dev.github.io/data/projects.json';
     const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
     const CACHE = 'sunken:projects:v3';
     let loaded = false;
@@ -996,7 +990,7 @@
 
         const meta = document.createElement('p');
         meta.className = 'meta';
-        for (const tag of [repo.language, ...repo.topics].filter(Boolean)) {
+        for (const tag of repo.topics) {
           const chip = document.createElement('span');
           chip.textContent = tag;
           meta.append(chip);
@@ -1044,7 +1038,6 @@
             homepage: repo.homepage,
             image: 'https://opengraph.githubassets.com/1/'
               + encodeURIComponent(repo.owner.login) + '/' + encodeURIComponent(repo.name),
-            language: repo.language,
             topics: repo.topics || []
           }));
       };
