@@ -702,7 +702,7 @@
       inset: 0;
       margin: auto;
       width: fit-content;
-      max-width: min(40rem, calc(100vw - 2rem));
+      max-width: min(46rem, calc(100vw - 2rem));
       height: fit-content;
       max-height: calc(100dvh - 2rem);
     }
@@ -726,14 +726,31 @@
 
     /* GitHub generates these cards on a white ground, so they are dimmed back
        until hover to keep them from punching a hole in the panel. */
-    .projects .shot {
+    /* The frame carries the scanlines; an img cannot hold a pseudo-element */
+    .projects .frame {
+      position: relative;
       flex: 0 0 auto;
-      width: clamp(7rem, 34vw, 13rem);
+      width: clamp(9.5rem, 42vw, 17.5rem);
+      align-self: start;
+      border: 1px solid #ffffff1a;
+    }
+
+    .projects .frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .5;
+      background: repeating-linear-gradient(to bottom, #0000 0 2px, #00000059 2px 3px);
+    }
+
+    .projects .shot {
+      display: block;
+      width: 100%;
       height: auto;
       aspect-ratio: 2 / 1;
       object-fit: cover;
-      border: 1px solid #ffffff1a;
-      opacity: .78;
+      opacity: .82;
       transition: opacity .22s ease;
     }
 
@@ -743,6 +760,9 @@
 
     /* min-width lets the text column shrink instead of overflowing the flex row */
     .projects .body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       min-width: 0;
     }
 
@@ -766,27 +786,73 @@
     .projects .meta {
       display: flex;
       flex-wrap: wrap;
-      gap: .3rem .5rem;
-      margin-top: .4rem;
-      font-size: .68rem;
+      gap: .3rem;
+      margin-top: .5rem;
+      font-size: .66rem;
       letter-spacing: .1em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
-    /* A lit status plate rather than another link in the tag row */
+    .projects .meta span {
+      --cut: 4px;
+      clip-path: var(--chamfer);
+      padding: .28em .6em;
+      background: #22e3ff16;
+      color: #a9c6d8;
+    }
+
+    /* A lit status plate with its own row, not another link among the tags */
     .projects .live {
+      position: relative;
+      overflow: hidden;
+      align-self: start;
       display: inline-flex;
       align-items: center;
       gap: .5em;
-      --cut: 5px;
+      --cut: 6px;
       clip-path: var(--chamfer);
-      padding: .3em .7em;
+      margin-top: .7rem;
+      padding: .45em .95em;
       border: 0;
       background: var(--magenta);
       color: #11030a;
-      letter-spacing: .14em;
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
       transition: background .22s ease, color .22s ease;
+    }
+
+    /* a highlight sweeping across the plate, like a readout refreshing */
+    .projects .live::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, #fff0 35%, #ffffff8c 50%, #fff0 65%);
+      transform: translateX(-120%);
+      animation: live-sweep 3.4s ease-in-out infinite;
+    }
+
+    @keyframes live-sweep {
+
+      0%,
+      62% {
+        transform: translateX(-120%);
+      }
+
+      88%,
+      100% {
+        transform: translateX(120%);
+      }
+    }
+
+    .projects .live::before {
+      content: "";
+      width: .45em;
+      height: .45em;
+      border-radius: 50%;
+      background: currentColor;
+      animation: live 1.8s ease-in-out infinite;
     }
 
     .projects .live:hover,
@@ -1048,6 +1114,9 @@
 
         // a repository without a social preview simply gets no thumbnail
         if (repo.image) {
+          const frame = document.createElement('span');
+          frame.className = 'frame';
+
           const shot = document.createElement('img');
           shot.className = 'shot';
           shot.src = repo.image;
@@ -1056,9 +1125,11 @@
           shot.decoding = 'async';
           shot.width = 208;
           shot.height = 104;
-          // drop the thumbnail rather than leave a broken frame behind
-          shot.addEventListener('error', () => shot.remove());
-          li.append(shot);
+          // drop the whole frame rather than leave an empty scanlined box
+          shot.addEventListener('error', () => frame.remove());
+
+          frame.append(shot);
+          li.append(frame);
         }
 
         const body = document.createElement('div');
@@ -1084,14 +1155,15 @@
           chip.textContent = tag;
           meta.append(chip);
         }
+        if (meta.childElementCount) body.append(meta);
+
         if (repo.homepage) {
           const live = document.createElement('a');
           live.className = 'live';
           live.href = repo.homepage;
           live.textContent = 'Live';
-          meta.append(live);
+          body.append(live);
         }
-        if (meta.childElementCount) body.append(meta);
 
         li.append(body);
         return li;
