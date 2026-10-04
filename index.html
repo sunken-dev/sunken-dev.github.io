@@ -669,6 +669,7 @@
 
     .sheet > h2 {
       margin: 0 0 .9rem;
+      padding-right: 2.75rem;
       font-family: var(--font-display);
       font-size: 1rem;
       font-weight: 600;
@@ -968,6 +969,9 @@
     .sheet-close {
       --cut: 6px;
       position: absolute;
+      /* the heading is position:relative and follows in source order, so it
+         would otherwise cover this button and swallow the tap */
+      z-index: 1;
       top: .7rem;
       right: .7rem;
       width: 1.9rem;
