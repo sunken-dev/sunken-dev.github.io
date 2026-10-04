@@ -875,7 +875,6 @@
       color: #04080c;
     }
 
-    /* the readout reads as connected: sweep quickens, status light goes solid */
     .projects .live-wrap:hover .live::before {
       animation: none;
       opacity: 1;
@@ -1260,6 +1259,47 @@
       projects.showModal();
       load();
     });
+
+    // Deep links: #imprint and #projects open the matching panel. The two are
+    // kept in step both ways, so the address bar always names what is open and
+    // Back steps out of it. The open attribute is observed rather than the
+    // close event, because that covers every route out including Esc.
+    const panels = { imprint: dialog, projects: projects };
+    let syncing = false;
+
+    const applyUrl = () => {
+      syncing = true;
+      const wanted = panels[decodeURIComponent(location.hash.slice(1)).toLowerCase()];
+      for (const panel of Object.values(panels)) {
+        if (panel === wanted) {
+          if (!panel.open) {
+            panel.showModal();
+            if (panel === projects) load();
+          }
+        } else if (panel.open) {
+          panel.close();
+        }
+      }
+      syncing = false;
+    };
+
+    const applyPanels = () => {
+      if (syncing) return;
+      const name = Object.keys(panels).find((key) => panels[key].open);
+      const hash = name ? `#${name}` : '';
+      if (hash !== location.hash) {
+        history.pushState(null, '', hash || location.pathname + location.search);
+      }
+    };
+
+    const watcher = new MutationObserver(applyPanels);
+    for (const panel of Object.values(panels)) {
+      watcher.observe(panel, { attributes: true, attributeFilter: ['open'] });
+    }
+
+    addEventListener('hashchange', applyUrl);
+    addEventListener('popstate', applyUrl);
+    applyUrl();
 
     // The sweep eases toward the pointer rather than snapping. The factor is
     // high enough to feel attached to the cursor, low enough to avoid jitter.
