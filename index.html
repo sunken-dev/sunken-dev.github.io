@@ -120,19 +120,14 @@
       color: var(--ink);
       font-family: var(--font-mono);
       overflow: hidden;
-      /* The hero is artwork; dragging across it should not paint a selection */
+      /* The page is artwork throughout; dragging should never paint a
+         selection, and this inherits into the dialogs. */
       -webkit-user-select: none;
       user-select: none;
       /* Nothing here scrolls, so a single-finger pan only lets the browser
          claim the gesture and cancel the pointer mid-drag. Pinch-zoom stays
          available so the page can still be magnified. */
       touch-action: pinch-zoom;
-    }
-
-    ::selection {
-      background: color-mix(in oklab, var(--cyan) 30%, transparent);
-      color: #fff;
-      text-shadow: none;
     }
 
     /* Neon city light bleeding through water. The gradients are soft by
@@ -601,6 +596,10 @@
       border: 0;
       background: transparent;
       color: var(--ink);
+      /* A rendered dialog stops inheriting the page's user-select, so it is
+         restated here rather than left to cascade. */
+      -webkit-user-select: none;
+      user-select: none;
       filter: drop-shadow(0 20px 50px #000) drop-shadow(0 0 26px color-mix(in oklab, var(--cyan) 30%, transparent));
     }
 
@@ -666,9 +665,6 @@
       backdrop-filter: blur(22px);
       font-size: .78rem;
       line-height: 1.65;
-      /* The imprint is information worth copying, unlike the hero */
-      -webkit-user-select: text;
-      user-select: text;
     }
 
     .sheet > h2 {
