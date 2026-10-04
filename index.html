@@ -87,8 +87,9 @@
 
       /* Corner furniture: the readouts and the imprint button share one scale
          so they read as the same layer of instrumentation. */
-      --hud-size: clamp(.54rem, 1.5vw, .68rem);
+      --hud-size: clamp(.44rem, 2.1vw, .68rem);
       --hud-tracking: .16em;
+      --hud-inset: clamp(.75rem, 3vw, 1.25rem);
 
       /* Resting grid and the brighter copy the sonar reveals */
       --grid-line: #22e3ff14;
@@ -526,37 +527,29 @@
 
     .hud-tl,
     .hud-tr {
-      top: max(1.25rem, env(safe-area-inset-top));
+      top: max(var(--hud-inset), env(safe-area-inset-top));
     }
 
     .hud-bl {
-      bottom: max(1.25rem, env(safe-area-inset-bottom));
+      bottom: max(var(--hud-inset), env(safe-area-inset-bottom));
     }
 
     .hud-tl,
     .hud-bl {
-      left: max(1.25rem, env(safe-area-inset-left));
+      left: max(var(--hud-inset), env(safe-area-inset-left));
     }
 
     .hud-tr {
-      right: max(1.25rem, env(safe-area-inset-right));
-    }
-
-    /* Measured: at the clamped size the two top readouts plus their margins
-       occupy ~342px, so below ~370px the longer one is dropped rather than
-       shrinking both past legibility. */
-    @media (max-width: 370px) {
-      .hud-tl {
-        display: none;
-      }
+      right: max(var(--hud-inset), env(safe-area-inset-right));
     }
 
     #imprint {
       position: fixed;
-      right: max(1.25rem, env(safe-area-inset-right));
-      bottom: max(1.25rem, env(safe-area-inset-bottom));
+      right: max(var(--hud-inset), env(safe-area-inset-right));
+      bottom: max(var(--hud-inset), env(safe-area-inset-bottom));
       z-index: 6;
-      padding: .62rem 1.15rem;
+      padding: .7em 1.35em;
+      min-height: 1.5rem;
       transition: color .22s ease, background .22s ease, opacity .2s ease;
     }
 
