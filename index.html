@@ -702,7 +702,7 @@
       inset: 0;
       margin: auto;
       width: fit-content;
-      max-width: min(46rem, calc(100vw - 2rem));
+      max-width: min(50rem, calc(100vw - 2rem));
       height: fit-content;
       max-height: calc(100dvh - 2rem);
     }
@@ -730,7 +730,7 @@
     .projects .frame {
       position: relative;
       flex: 0 0 auto;
-      width: clamp(9.5rem, 42vw, 17.5rem);
+      width: clamp(11.5rem, 50vw, 21rem);
       align-self: start;
       border: 1px solid #ffffff1a;
     }
@@ -797,22 +797,36 @@
     .projects .meta span {
       --cut: 4px;
       clip-path: var(--chamfer);
-      padding: .28em .6em;
+      padding: .28em 1em;
       background: #22e3ff16;
       color: #a9c6d8;
+    }
+
+    /* clip-path cuts off any glow on the element itself, so the halo lives on
+       a wrapper and the plate only changes its own fill. */
+    .projects .live-wrap {
+      align-self: start;
+      display: inline-block;
+      margin-top: .7rem;
+      transition: filter .22s ease;
+    }
+
+    .projects .live-wrap:hover,
+    .projects .live-wrap:focus-within {
+      filter:
+        drop-shadow(0 0 6px color-mix(in oklab, var(--cyan) 75%, transparent))
+        drop-shadow(0 0 18px color-mix(in oklab, var(--cyan) 50%, transparent));
     }
 
     /* A lit status plate with its own row, not another link among the tags */
     .projects .live {
       position: relative;
       overflow: hidden;
-      align-self: start;
       display: inline-flex;
       align-items: center;
       gap: .5em;
       --cut: 6px;
       clip-path: var(--chamfer);
-      margin-top: .7rem;
       padding: .45em .95em;
       border: 0;
       background: var(--magenta);
@@ -855,10 +869,20 @@
       animation: live 1.8s ease-in-out infinite;
     }
 
-    .projects .live:hover,
+    .projects .live-wrap:hover .live,
     .projects .live:focus-visible {
       background: var(--cyan);
       color: #04080c;
+    }
+
+    /* the readout reads as connected: sweep quickens, status light goes solid */
+    .projects .live-wrap:hover .live::before {
+      animation: none;
+      opacity: 1;
+    }
+
+    .projects .live-wrap:hover .live::after {
+      animation-duration: 1.1s;
     }
 
     @keyframes live {
@@ -1162,7 +1186,12 @@
           live.className = 'live';
           live.href = repo.homepage;
           live.textContent = 'Live';
-          body.append(live);
+
+          // the wrapper exists purely to carry a glow the clip would remove
+          const halo = document.createElement('span');
+          halo.className = 'live-wrap';
+          halo.append(live);
+          body.append(halo);
         }
 
         li.append(body);
