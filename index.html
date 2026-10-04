@@ -593,6 +593,24 @@
       background: transparent;
     }
 
+    /* The centred panel covers the hero, so the page behind it is dimmed to
+       keep the entries readable. The corner panel leaves it untouched. */
+    #projects-dialog::backdrop {
+      background: #04070abf;
+      opacity: 0;
+      transition: opacity .3s ease, overlay .42s allow-discrete, display .42s allow-discrete;
+    }
+
+    #projects-dialog[open]::backdrop {
+      opacity: 1;
+    }
+
+    @starting-style {
+      #projects-dialog[open]::backdrop {
+        opacity: 0;
+      }
+    }
+
     /* Panels snap open like a display powering up rather than fading in. The
        discrete transitions let the exit play before the dialog is torn down.
        scaleY is used instead of clip-path, which would cut off the glow. */
@@ -675,27 +693,14 @@
       text-shadow: 0 0 14px color-mix(in oklab, var(--cyan) 70%, transparent);
     }
 
+    /* Centred and only as wide as the entries need */
     #projects-dialog {
-      inset: var(--hud-inset);
-      /* the UA sheet sizes dialogs to fit-content, so both axes are released */
-      width: auto;
-      height: auto;
-      max-height: none;
-    }
-
-    #projects-dialog .panel,
-    #projects-dialog .sheet {
-      height: 100%;
-    }
-
-    #projects-dialog .sheet {
-      overflow: auto;
-    }
-
-    /* Wide enough to lay the entries out as cards rather than one long column */
-    #projects-dialog .projects {
-      grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-      align-content: start;
+      inset: 0;
+      margin: auto;
+      width: fit-content;
+      max-width: min(40rem, calc(100vw - 2rem));
+      height: fit-content;
+      max-height: calc(100dvh - 2rem);
     }
 
     .projects {
@@ -719,11 +724,12 @@
        until hover to keep them from punching a hole in the panel. */
     .projects .shot {
       flex: 0 0 auto;
-      width: 6.5rem;
-      height: 3.25rem;
+      width: clamp(7rem, 34vw, 13rem);
+      height: auto;
+      aspect-ratio: 2 / 1;
       object-fit: cover;
       border: 1px solid #ffffff1a;
-      opacity: .72;
+      opacity: .78;
       transition: opacity .22s ease;
     }
 
@@ -764,9 +770,46 @@
       color: var(--muted);
     }
 
-    .projects .meta a {
-      color: var(--magenta);
-      border-bottom-color: #ff2d9559;
+    /* A lit status plate rather than another link in the tag row */
+    .projects .live {
+      display: inline-flex;
+      align-items: center;
+      gap: .5em;
+      --cut: 5px;
+      clip-path: var(--chamfer);
+      padding: .3em .7em;
+      border: 0;
+      background: var(--magenta);
+      color: #11030a;
+      letter-spacing: .14em;
+      transition: background .22s ease, color .22s ease;
+    }
+
+    .projects .live::before {
+      content: "";
+      width: .45em;
+      height: .45em;
+      border-radius: 50%;
+      background: currentColor;
+      animation: live 1.8s ease-in-out infinite;
+    }
+
+    .projects .live:hover,
+    .projects .live:focus-visible {
+      background: var(--cyan);
+      color: #04080c;
+    }
+
+    @keyframes live {
+
+      0%,
+      100% {
+        opacity: .35;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     .projects-status {
@@ -1048,6 +1091,7 @@
         }
         if (repo.homepage) {
           const live = document.createElement('a');
+          live.className = 'live';
           live.href = repo.homepage;
           live.textContent = 'Live';
           meta.append(live);
