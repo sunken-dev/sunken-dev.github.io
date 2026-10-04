@@ -593,6 +593,38 @@
       background: transparent;
     }
 
+    /* Panels snap open like a display powering up rather than fading in. The
+       discrete transitions let the exit play before the dialog is torn down.
+       scaleY is used instead of clip-path, which would cut off the glow. */
+    dialog {
+      opacity: 0;
+      transform: scaleY(.84) skewX(-1.5deg);
+      transition:
+        opacity .14s ease,
+        transform .2s cubic-bezier(.2, .9, .25, 1),
+        overlay .2s allow-discrete,
+        display .2s allow-discrete;
+    }
+
+    dialog[open] {
+      opacity: 1;
+      transform: none;
+    }
+
+    @starting-style {
+      dialog[open] {
+        opacity: 0;
+        transform: scaleY(.84) skewX(-1.5deg);
+      }
+    }
+
+    .panel {
+      --cut: 14px;
+      clip-path: var(--chamfer);
+      background: color-mix(in oklab, var(--cyan) 50%, transparent);
+      padding: 1px;
+    }
+
     .sheet {
       --cut: 14px;
       clip-path: var(--chamfer);
