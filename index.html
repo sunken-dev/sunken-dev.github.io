@@ -811,11 +811,30 @@
       transition: filter .22s ease;
     }
 
+    /* The static glow is the fallback when motion is reduced; the pulse rides
+       on top of it. */
     .projects .live-wrap:hover,
     .projects .live-wrap:focus-within {
       filter:
-        drop-shadow(0 0 6px color-mix(in oklab, var(--cyan) 75%, transparent))
-        drop-shadow(0 0 18px color-mix(in oklab, var(--cyan) 50%, transparent));
+        drop-shadow(0 0 6px color-mix(in oklab, var(--magenta) 80%, transparent))
+        drop-shadow(0 0 18px color-mix(in oklab, var(--magenta) 55%, transparent));
+      animation: alert-glow .9s ease-in-out infinite;
+    }
+
+    @keyframes alert-glow {
+
+      0%,
+      100% {
+        filter:
+          drop-shadow(0 0 4px color-mix(in oklab, var(--magenta) 65%, transparent))
+          drop-shadow(0 0 12px color-mix(in oklab, var(--magenta) 40%, transparent));
+      }
+
+      50% {
+        filter:
+          drop-shadow(0 0 9px var(--magenta))
+          drop-shadow(0 0 24px color-mix(in oklab, var(--magenta) 70%, transparent));
+      }
     }
 
     /* A lit status plate with its own row, not another link among the tags */
@@ -869,10 +888,25 @@
       animation: live 1.8s ease-in-out infinite;
     }
 
+    /* Hover reads as a raised alert: the plate stays red and flashes, the
+       status light holds solid and the idle sweep gets out of the way. */
     .projects .live-wrap:hover .live,
     .projects .live:focus-visible {
-      background: var(--cyan);
-      color: #04080c;
+      animation: alert .9s ease-in-out infinite;
+    }
+
+    @keyframes alert {
+
+      0%,
+      100% {
+        background: var(--magenta);
+        color: #11030a;
+      }
+
+      50% {
+        background: #ff6f8f;
+        color: #1b0209;
+      }
     }
 
     .projects .live-wrap:hover .live::before {
@@ -881,7 +915,8 @@
     }
 
     .projects .live-wrap:hover .live::after {
-      animation-duration: 1.1s;
+      animation: none;
+      opacity: 0;
     }
 
     @keyframes live {
