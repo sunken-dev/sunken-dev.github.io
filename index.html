@@ -963,17 +963,20 @@
       const items = repos.map((repo) => {
         const li = document.createElement('li');
 
-        const shot = document.createElement('img');
-        shot.className = 'shot';
-        shot.src = repo.image;
-        shot.alt = '';
-        // not lazy: the list is only built once the panel is already open
-        shot.decoding = 'async';
-        shot.width = 208;
-        shot.height = 104;
-        // drop the thumbnail rather than leave a broken frame behind
-        shot.addEventListener('error', () => shot.remove());
-        li.append(shot);
+        // a repository without a social preview simply gets no thumbnail
+        if (repo.image) {
+          const shot = document.createElement('img');
+          shot.className = 'shot';
+          shot.src = repo.image;
+          shot.alt = '';
+          // not lazy: the list is only built once the panel is already open
+          shot.decoding = 'async';
+          shot.width = 208;
+          shot.height = 104;
+          // drop the thumbnail rather than leave a broken frame behind
+          shot.addEventListener('error', () => shot.remove());
+          li.append(shot);
+        }
 
         const body = document.createElement('div');
         body.className = 'body';
@@ -1041,7 +1044,6 @@
             homepage: repo.homepage,
             image: 'https://opengraph.githubassets.com/1/'
               + encodeURIComponent(repo.owner.login) + '/' + encodeURIComponent(repo.name),
-            customImage: false,
             language: repo.language,
             topics: repo.topics || []
           }));

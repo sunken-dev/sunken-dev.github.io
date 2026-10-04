@@ -37,39 +37,68 @@ jobs:
           persist-credentials: false
       - name: Setup Pages
         uses: actions/configure-pages@v6
-      # The real social preview is only exposed through the GraphQL API, which
-      # requires a token, so the list is resolved here and published as static
-      # JSON rather than fetched from the browser. Failure is tolerated: the
-      # page falls back to the anonymous REST API.
+      # A repository's social preview is only published in the og:image tag of
+      # its public page - the same tag WhatsApp and other scrapers read. A
+      # browser cannot read it because GitHub sends no CORS header on HTML, so
+      # it is resolved here and written beside the page. Failure is tolerated:
+      # the page falls back to the REST API and its generated cards.
       - name: Collect projects
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # shellcheck disable=SC2016  # $org is a GraphQL variable, not a shell one
-          gh api graphql -f query='
-            query($org: String!) {
-              organization(login: $org) {
-                repositories(first: 100, privacy: PUBLIC, orderBy: {field: UPDATED_AT, direction: DESC}) {
-                  nodes {
-                    name description url homepageUrl isFork
-                    openGraphImageUrl usesCustomOpenGraphImage
-                    primaryLanguage { name }
-                    repositoryTopics(first: 10) { nodes { topic { name } } }
-                  }
-                }
-              }
-            }' -F org=sunken-dev --jq '
-              [ .data.organization.repositories.nodes[]
-                | select(.isFork | not)
-                | select(.name != "sunken-dev.github.io")
-                | { name, description, url,
-                    homepage: .homepageUrl,
-                    image: .openGraphImageUrl,
-                    customImage: .usesCustomOpenGraphImage,
-                    language: (.primaryLanguage.name // null),
-                    topics: [ .repositoryTopics.nodes[].topic.name ] } ]' > projects.json
-          echo "collected $(jq length projects.json) projects"
+          python3 - <<'PY'
+          import json, os, re, urllib.request
+
+          ORG = 'sunken-dev'
+          SELF = 'sunken-dev.github.io'
+
+          def get(url, accept=None, token=None):
+              headers = {'User-Agent': 'sunken-dev-pages'}
+              if accept:
+                  headers['Accept'] = accept
+              if token:
+                  headers['Authorization'] = 'Bearer ' + token
+              request = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(request, timeout=20) as response:
+                  return response.read().decode('utf-8', 'replace')
+
+          def social_preview(html):
+              # attribute order is not fixed, so match the tag then the value
+              tag = re.search(r'<meta[^>]*property=["\']og:image["\'][^>]*>', html)
+              if not tag:
+                  return None
+              value = re.search(r'content=["\']([^"\']+)["\']', tag.group(0))
+              return value.group(1) if value else None
+
+          token = os.environ.get('GH_TOKEN')
+          repos = json.loads(get(
+              f'https://api.github.com/orgs/{ORG}/repos?per_page=100&sort=updated',
+              'application/vnd.github+json', token))
+
+          projects = []
+          for repo in repos:
+              if repo['fork'] or repo['name'] == SELF:
+                  continue
+              try:
+                  image = social_preview(get(repo['html_url']))
+              except Exception as error:
+                  print(f"  {repo['name']}: no preview ({error})")
+                  image = None
+              projects.append({
+                  'name': repo['name'],
+                  'description': repo['description'],
+                  'url': repo['html_url'],
+                  'homepage': repo['homepage'],
+                  'image': image,
+                  'language': repo['language'],
+                  'topics': repo.get('topics') or [],
+              })
+
+          with open('projects.json', 'w') as handle:
+              json.dump(projects, handle, indent=2)
+          print(f'collected {len(projects)} projects')
+          PY
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
