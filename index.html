@@ -663,9 +663,33 @@
     }
 
     .projects li {
+      display: flex;
+      gap: .7rem;
+      align-items: flex-start;
       padding: .6rem .7rem;
       border: 1px solid #ffffff14;
       background: #ffffff06;
+    }
+
+    /* GitHub generates these cards on a white ground, so they are dimmed back
+       until hover to keep them from punching a hole in the panel. */
+    .projects .shot {
+      flex: 0 0 auto;
+      width: 6.5rem;
+      height: 3.25rem;
+      object-fit: cover;
+      border: 1px solid #ffffff1a;
+      opacity: .72;
+      transition: opacity .22s ease;
+    }
+
+    .projects li:hover .shot {
+      opacity: 1;
+    }
+
+    /* min-width lets the text column shrink instead of overflowing the flex row */
+    .projects .body {
+      min-width: 0;
     }
 
     .projects h3 {
@@ -909,7 +933,7 @@
     // the dialog is the enhancement on top of it.
     const projectsLink = document.getElementById('projects-link');
     const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
-    const CACHE = 'sunken:projects';
+    const CACHE = 'sunken:projects:v2';
     let loaded = false;
 
     const status = (text, href) => {
@@ -936,17 +960,32 @@
       const items = repos.map((repo) => {
         const li = document.createElement('li');
 
+        const shot = document.createElement('img');
+        shot.className = 'shot';
+        shot.src = 'https://opengraph.githubassets.com/1/' + repo.slug;
+        shot.alt = '';
+        // not lazy: the list is only built once the panel is already open
+        shot.decoding = 'async';
+        shot.width = 208;
+        shot.height = 104;
+        // drop the thumbnail rather than leave a broken frame behind
+        shot.addEventListener('error', () => shot.remove());
+        li.append(shot);
+
+        const body = document.createElement('div');
+        body.className = 'body';
+
         const title = document.createElement('h3');
         const link = document.createElement('a');
         link.href = repo.url;
         link.textContent = repo.name;
         title.append(link);
-        li.append(title);
+        body.append(title);
 
         if (repo.description) {
           const text = document.createElement('p');
           text.textContent = repo.description;
-          li.append(text);
+          body.append(text);
         }
 
         const meta = document.createElement('p');
@@ -962,8 +1001,9 @@
           live.textContent = 'Live';
           meta.append(live);
         }
-        if (meta.childElementCount) li.append(meta);
+        if (meta.childElementCount) body.append(meta);
 
+        li.append(body);
         return li;
       });
       projectsList.replaceChildren(...items);
@@ -990,6 +1030,7 @@
           // forks are someone else's work, and this page is not a project
           .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io')
           .map((repo) => ({
+            slug: encodeURIComponent(repo.owner.login) + '/' + encodeURIComponent(repo.name),
             name: repo.name,
             description: repo.description,
             url: repo.html_url,
