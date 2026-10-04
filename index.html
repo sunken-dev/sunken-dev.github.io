@@ -644,7 +644,26 @@
     }
 
     #projects-dialog {
-      width: min(30rem, calc(100vw - 2rem));
+      inset: var(--hud-inset);
+      /* the UA sheet sizes dialogs to fit-content, so both axes are released */
+      width: auto;
+      height: auto;
+      max-height: none;
+    }
+
+    #projects-dialog .panel,
+    #projects-dialog .sheet {
+      height: 100%;
+    }
+
+    #projects-dialog .sheet {
+      overflow: auto;
+    }
+
+    /* Wide enough to lay the entries out as cards rather than one long column */
+    #projects-dialog .projects {
+      grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+      align-content: start;
     }
 
     .projects {
