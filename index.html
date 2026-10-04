@@ -497,15 +497,26 @@
       transition: background .22s ease;
     }
 
-    .btn:hover,
     .btn:focus-visible {
       background: var(--cyan);
       color: #04080c;
     }
 
-    .btn:hover::before,
+    @media (hover: hover) {
+      .btn:hover {
+        background: var(--cyan);
+        color: #04080c;
+      }
+    }
+
     .btn:focus-visible::before {
       background: transparent;
+    }
+
+    @media (hover: hover) {
+      .btn:hover::before {
+        background: transparent;
+      }
     }
 
     /* clip-path would cut away an outline or box-shadow, so focus is shown by
@@ -691,10 +702,16 @@
       transition: border-color .2s, text-shadow .2s;
     }
 
-    .sheet a:hover,
     .sheet a:focus-visible {
       border-bottom-color: var(--cyan);
       text-shadow: 0 0 14px color-mix(in oklab, var(--cyan) 70%, transparent);
+    }
+
+    @media (hover: hover) {
+      .sheet a:hover {
+        border-bottom-color: var(--cyan);
+        text-shadow: 0 0 14px color-mix(in oklab, var(--cyan) 70%, transparent);
+      }
     }
 
     /* Centred and only as wide as the entries need */
@@ -754,8 +771,10 @@
       transition: opacity .22s ease;
     }
 
-    .projects li:hover .shot {
-      opacity: 1;
+    @media (hover: hover) {
+      .projects li:hover .shot {
+        opacity: 1;
+      }
     }
 
     /* min-width lets the text column shrink instead of overflowing the flex row */
@@ -813,8 +832,8 @@
 
     /* The static glow is the fallback when motion is reduced; the pulse rides
        on top of it. */
-    .projects .live-wrap:hover,
-    .projects .live-wrap:focus-within {
+    .projects .live-wrap:focus-within,
+    .projects .live-wrap:where(:hover) {
       filter:
         drop-shadow(0 0 6px color-mix(in oklab, var(--magenta) 80%, transparent))
         drop-shadow(0 0 18px color-mix(in oklab, var(--magenta) 55%, transparent));
@@ -892,8 +911,8 @@
 
     /* Hover reads as a raised alert: the plate stays red and flashes, the
        status light holds solid and the idle sweep gets out of the way. */
-    .projects .live-wrap:hover .live,
-    .projects .live:focus-visible {
+    .projects .live:focus-visible,
+    .projects .live-wrap:where(:hover) .live {
       animation: alert .9s ease-in-out infinite;
     }
 
@@ -917,14 +936,16 @@
       box-shadow: inset 0 0 0 2px #11030a;
     }
 
-    .projects .live-wrap:hover .live::before {
-      animation: none;
-      opacity: 1;
-    }
+    @media (hover: hover) {
+      .projects .live-wrap:hover .live::before {
+        animation: none;
+        opacity: 1;
+      }
 
-    .projects .live-wrap:hover .live::after {
-      animation: none;
-      opacity: 0;
+      .projects .live-wrap:hover .live::after {
+        animation: none;
+        opacity: 0;
+      }
     }
 
     @keyframes live {
@@ -961,6 +982,30 @@
     :focus-visible {
       outline: 2px solid var(--cyan);
       outline-offset: 3px;
+    }
+
+    /* A fingertip needs far more room than a cursor. The inline links grow
+       their hit area with padding cancelled by margin, so nothing shifts. */
+    @media (pointer: coarse) {
+      .btn {
+        min-height: 2.75rem;
+      }
+
+      .sheet-close {
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+
+      .projects .live {
+        min-height: 2.75rem;
+      }
+
+      .projects h3 a,
+      .sheet p a {
+        display: inline-block;
+        padding: .7rem 0;
+        margin: -.7rem 0;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
