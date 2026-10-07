@@ -1,5 +1,17 @@
 [
   {
+    "name": "nudge",
+    "description": "Everyone, one finger on the screen. A gentle nudge for who goes first.",
+    "url": "https://github.com/sunken-dev/nudge",
+    "homepage": "http://nudge.sunken.dev/",
+    "image": "https://repository-images.githubusercontent.com/1408665800/b9e8a864-2785-452c-8340-160612510e94",
+    "topics": [
+      "ai-disclosure",
+      "boardgame",
+      "tool"
+    ]
+  },
+  {
     "name": "welcome-to",
     "description": "A fan-made, browser implementation of Welcome To Your Perfect Home.",
     "url": "https://github.com/sunken-dev/welcome-to",
@@ -17,16 +29,5 @@
     "homepage": null,
     "image": "https://opengraph.githubassets.com/6d84bb3a27ca5672997bc17471209ee2acccd86d46e3b84d7dee91835b1f77c8/sunken-dev/unicorn-bank",
     "topics": []
-  },
-  {
-    "name": "mdbook-extended",
-    "description": "`mdbook-extended` is an mdbook docker container extended with some of the most important extension making it easy to build and serve documentation written in mdbook format.",
-    "url": "https://github.com/sunken-dev/mdbook-extended",
-    "homepage": null,
-    "image": "https://opengraph.githubassets.com/0eeaf89cc940e5102a278690e8ddca2100ae41522c1e79bd56e6af2b804e3623/sunken-dev/mdbook-extended",
-    "topics": [
-      "docker",
-      "mdbook"
-    ]
   }
 ]
