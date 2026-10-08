@@ -724,14 +724,50 @@
          off the screen so the page pans instead of the panel scrolling. */
       max-height: calc(100vh - 2rem);
       max-height: calc(100svh - 2rem);
+      overflow: hidden;
+    }
+
+    /* The heading and close button stay put; only the entries scroll. */
+    #projects-dialog[open],
+    #projects-dialog .panel,
+    #projects-dialog .sheet {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    #projects-dialog .panel,
+    #projects-dialog .sheet {
+      flex: 1 1 auto;
     }
 
     .projects {
       margin: 0;
-      padding: 0;
+      padding: 0 .5rem 0 0;
       list-style: none;
       display: grid;
       gap: .6rem;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in oklab, var(--cyan) 60%, transparent) #ffffff0d;
+    }
+
+    .projects::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .projects::-webkit-scrollbar-track {
+      background: #ffffff0d;
+    }
+
+    .projects::-webkit-scrollbar-thumb {
+      background: color-mix(in oklab, var(--cyan) 60%, transparent);
+    }
+
+    .projects::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan);
     }
 
     .projects li {
