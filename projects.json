@@ -1,16 +1,5 @@
 [
   {
-    "name": "unicorn-bank",
-    "description": "Unicorn Bank is a deliberately insecure mock online bank for hands-on web security training. Find the flaws, break in an d move the money offshore. No real bank, no real money.",
-    "url": "https://github.com/sunken-dev/unicorn-bank",
-    "homepage": "http://unicorn-bank.sunken.dev/",
-    "image": "https://repository-images.githubusercontent.com/601638498/f2368a62-cf09-41c0-a42a-641e6f36490c",
-    "topics": [
-      "security",
-      "training"
-    ]
-  },
-  {
     "name": "nudge",
     "description": "Everyone, one finger on the screen. A gentle nudge for who goes first.",
     "url": "https://github.com/sunken-dev/nudge",
@@ -20,6 +9,17 @@
       "ai-disclosure",
       "boardgame",
       "tool"
+    ]
+  },
+  {
+    "name": "unicorn-bank",
+    "description": "Unicorn Bank is a deliberately insecure mock online bank for hands-on web security training. Find the flaws, break in an d move the money offshore. No real bank, no real money.",
+    "url": "https://github.com/sunken-dev/unicorn-bank",
+    "homepage": "http://unicorn-bank.sunken.dev/",
+    "image": "https://repository-images.githubusercontent.com/601638498/f2368a62-cf09-41c0-a42a-641e6f36490c",
+    "topics": [
+      "security",
+      "training"
     ]
   },
   {
