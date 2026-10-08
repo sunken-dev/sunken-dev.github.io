@@ -91,9 +91,12 @@
       --hud-tracking: .16em;
       --hud-inset: clamp(.75rem, 3vw, 1.25rem);
 
-      /* Resting grid and the brighter copy the sonar reveals */
-      --grid-line: #22e3ff14;
-      --grid-line-hot: #22e3ff7a;
+      /* Resting honeycomb and the brighter copy the sonar reveals. One tile is
+         3 side lengths wide (78px) and holds one flat-topped hexagon. */
+      --hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='45.0333'%3E%3Cpath d='M0 22.5167L13 0H39L52 22.5167H78M52 22.5167L39 45.0333H13L0 22.5167' fill='none' stroke='%2322e3ff' stroke-opacity='.08'/%3E%3C/svg%3E");
+      --hex-hot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='45.0333'%3E%3Cpath d='M0 22.5167L13 0H39L52 22.5167H78M52 22.5167L39 45.0333H13L0 22.5167' fill='none' stroke='%2322e3ff' stroke-opacity='.48'/%3E%3C/svg%3E");
+      --hex-w: 78px;
+      --hex-h: 45.0333px;
 
       /* Beveled plating: top-left and bottom-right corners cut at 45 degrees.
          Resolved against each element's own --cut. */
@@ -179,17 +182,15 @@
       }
     }
 
-    /* Faint tech grid, masked to an ellipse so it never reaches the edges.
-       Pans exactly one cell per cycle, so the loop is seamless. */
+    /* Faint honeycomb, masked to an ellipse so it never reaches the edges.
+       Pans exactly one tile per cycle, so the loop is seamless. */
     .grid {
       position: fixed;
-      inset: -46px;
+      inset: calc(-1 * var(--hex-w));
       z-index: 1;
       pointer-events: none;
-      background-image:
-        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-      background-size: 46px 46px;
+      background-image: var(--hex);
+      background-size: var(--hex-w) var(--hex-h);
       -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
       mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 15%, transparent 78%);
       will-change: transform;
@@ -198,7 +199,7 @@
 
     @keyframes grid-pan {
       to {
-        transform: translate3d(46px, 46px, 0);
+        transform: translate3d(var(--hex-w), var(--hex-h), 0);
       }
     }
 
@@ -221,11 +222,9 @@
     .sonar::before {
       content: "";
       position: absolute;
-      inset: -46px;
-      background-image:
-        linear-gradient(to right, var(--grid-line-hot) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-line-hot) 1px, transparent 1px);
-      background-size: 46px 46px;
+      inset: calc(-1 * var(--hex-w));
+      background-image: var(--hex-hot);
+      background-size: var(--hex-w) var(--hex-h);
       will-change: transform;
       animation: grid-pan 18s linear infinite;
     }
