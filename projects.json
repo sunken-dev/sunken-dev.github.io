@@ -1,5 +1,16 @@
 [
   {
+    "name": "welcome-to",
+    "description": "A fan-made, browser implementation of Welcome To Your Perfect Home.",
+    "url": "https://github.com/sunken-dev/welcome-to",
+    "homepage": "http://welcome-to.sunken.dev/",
+    "image": "https://repository-images.githubusercontent.com/1318746651/68905970-528d-4f38-b758-61ead1b0e542",
+    "topics": [
+      "ai-disclosure",
+      "boardgame"
+    ]
+  },
+  {
     "name": "nudge",
     "description": "Everyone, one finger on the screen. A gentle nudge for who goes first.",
     "url": "https://github.com/sunken-dev/nudge",
@@ -20,17 +31,6 @@
     "topics": [
       "security",
       "training"
-    ]
-  },
-  {
-    "name": "welcome-to",
-    "description": "A fan-made, browser implementation of Welcome To Your Perfect Home.",
-    "url": "https://github.com/sunken-dev/welcome-to",
-    "homepage": "http://welcome-to.sunken.dev/",
-    "image": "https://repository-images.githubusercontent.com/1318746651/d38a6af7-1488-4d2c-a1d3-72d9baac9693",
-    "topics": [
-      "ai-disclosure",
-      "boardgame"
     ]
   }
 ]
