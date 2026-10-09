@@ -1015,6 +1015,54 @@
       }
     }
 
+    /* Placeholder entry shown until the real one, preview included, is ready.
+       It mirrors the entry layout so nothing shifts when it is swapped. */
+    .projects .skeleton .frame {
+      aspect-ratio: 2 / 1;
+    }
+
+    .projects .skeleton .frame::after {
+      opacity: 1;
+      background: linear-gradient(100deg, #0000 30%, #22e3ff1f 50%, #0000 70%) 0 0 / 250% 100%;
+      animation: shimmer 1.4s linear infinite;
+    }
+
+    .projects .skeleton .frame,
+    .projects .skeleton .bar {
+      background-color: #ffffff0d;
+    }
+
+    .projects .skeleton .body {
+      flex: 1 1 auto;
+      align-self: stretch;
+      gap: .5rem;
+      width: 100%;
+    }
+
+    .projects .skeleton .bar {
+      height: .8rem;
+      width: 100%;
+    }
+
+    .projects .skeleton .bar:first-child {
+      height: 1.1rem;
+      width: 40%;
+    }
+
+    .projects .skeleton .bar:last-child {
+      width: 70%;
+    }
+
+    @keyframes shimmer {
+      from {
+        background-position: 100% 0;
+      }
+
+      to {
+        background-position: -150% 0;
+      }
+    }
+
     .projects-status {
       border: 0 !important;
       background: none !important;
@@ -1271,10 +1319,40 @@
       projectsList.replaceChildren(li);
     };
 
+    const SKELETON_COUNT = 3;
+    const PREVIEW_TIMEOUT_MS = 5000;
+
+    const skeleton = () => {
+      const li = document.createElement('li');
+      li.className = 'skeleton';
+      li.setAttribute('aria-hidden', 'true');
+
+      const frame = document.createElement('span');
+      frame.className = 'frame';
+
+      const body = document.createElement('div');
+      body.className = 'body';
+      for (let i = 0; i < 3; i++) {
+        const bar = document.createElement('span');
+        bar.className = 'bar';
+        body.append(bar);
+      }
+
+      li.append(frame, body);
+      return li;
+    };
+
+    const showSkeletons = (count) => {
+      projectsList.setAttribute('aria-busy', 'true');
+      projectsList.replaceChildren(...Array.from({ length: count }, skeleton));
+    };
+
     // Everything is built as nodes with textContent; nothing from the API is
-    // ever parsed as markup.
+    // ever parsed as markup. Each entry replaces its skeleton only once its
+    // preview has loaded (or failed, which drops the preview).
     const render = (repos) => {
       if (!repos.length) {
+        projectsList.removeAttribute('aria-busy');
         status('No public projects yet.');
         return;
       }
@@ -1344,12 +1422,36 @@
         li.append(body);
         return li;
       });
-      projectsList.replaceChildren(...items);
+
+      const placeholders = items.map(skeleton);
+      projectsList.replaceChildren(...placeholders);
+      let pending = items.length;
+      items.forEach((li, index) => {
+        const shot = li.querySelector('.shot');
+        const show = () => {
+          if (!placeholders[index].isConnected) return;
+          placeholders[index].replaceWith(li);
+          if (--pending === 0) projectsList.removeAttribute('aria-busy');
+        };
+        if (!shot || shot.complete) {
+          show();
+        } else {
+          // a stalled preview must not hold the entry back indefinitely
+          const timer = setTimeout(show, PREVIEW_TIMEOUT_MS);
+          const done = () => {
+            clearTimeout(timer);
+            show();
+          };
+          shot.addEventListener('load', done, { once: true });
+          shot.addEventListener('error', done, { once: true });
+        }
+      });
     };
 
     const load = async () => {
       if (loaded) return;
       loaded = true;
+      showSkeletons(SKELETON_COUNT);
 
       try {
         const cached = sessionStorage.getItem(CACHE);
@@ -1398,6 +1500,7 @@
       } catch (error) {
         // unauthenticated callers get 60 requests an hour, shared per address
         loaded = false;
+        projectsList.removeAttribute('aria-busy');
         status('Could not reach GitHub.', projectsLink.href);
       }
     };
