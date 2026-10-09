@@ -1548,7 +1548,8 @@
         status('No public projects yet.');
         return;
       }
-      const items = repos.map((repo) => {
+      const sorted = [...repos].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+      const items = sorted.map((repo) => {
         const li = document.createElement('li');
 
         // a repository without a social preview simply gets no thumbnail
