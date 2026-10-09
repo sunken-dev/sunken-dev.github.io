@@ -532,6 +532,99 @@
       stroke-linejoin: round;
     }
 
+    .menu,
+    .menu-probe {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    /* Unseen copy of the bar in its row arrangement, measured to decide whether
+       the real one fits. */
+    .menu-probe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: max-content;
+      gap: .6rem;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .menu-toggle {
+      display: none;
+      padding: 0;
+      width: max(2.4em, 1.5rem);
+      height: max(2.4em, 1.5rem);
+    }
+
+    .menu-toggle .icon {
+      width: .9rem;
+      height: .9rem;
+      margin: 0;
+    }
+
+    /* The three bars collapse into a cross while the menu is open */
+    .menu-toggle line {
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform .3s cubic-bezier(.4, 0, .2, 1), opacity .2s ease;
+    }
+
+    .menu-toggle[aria-expanded="true"] .bar-top {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded="true"] .bar-mid {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .menu-toggle[aria-expanded="true"] .bar-bottom {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    /* Too narrow for the row: the buttons collapse behind the toggle and
+       slide out above it, nearest button first. The script picks the mode and
+       fades the bar out while it switches, so the layout change is never seen. */
+    .actions[data-mode="menu"] .menu-toggle {
+      display: inline-flex;
+    }
+
+    .actions[data-mode="menu"] .menu {
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      padding-bottom: .6rem;
+      flex-direction: column;
+      align-items: stretch;
+      visibility: hidden;
+      transition: visibility 0s .3s;
+    }
+
+    .actions[data-mode="menu"] .menu .btn {
+      justify-content: flex-start;
+      opacity: 0;
+      transform: translateY(.9rem);
+      transition: color .22s ease, background .22s ease, opacity .2s ease, transform .3s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .actions[data-mode="menu"][data-open] .menu {
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    .actions[data-mode="menu"][data-open] .menu .btn {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0s, 0s, calc(var(--i) * 50ms), calc(var(--i) * 50ms);
+    }
+
+    .actions[data-swapping] {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     /* Instrument readouts in the corners. Decorative telemetry, so they are
        hidden from assistive tech and sized fluidly to keep the top pair from
        meeting in the middle on narrow screens. */
@@ -1109,6 +1202,11 @@
         min-height: 2.75rem;
       }
 
+      .menu-toggle {
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+
       .sheet-close {
         width: 2.75rem;
         height: 2.75rem;
@@ -1247,10 +1345,13 @@
   <div class="hud hud-tr" aria-hidden="true">SNK-07 // <b>PRESSURE OK</b></div>
   <div class="hud hud-bl" aria-hidden="true"><b>2026</b> // SURFACING SOON</div>
 
-  <nav class="actions">
-    <button id="projects-button" class="btn" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Projects</button>
-    <a id="github-link" class="btn" href="https://github.com/sunken-dev/" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4M9 18c-4.51 2-5-2-7-2"/></svg>GitHub</a>
-    <button id="imprint" class="btn" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7ZM14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/></svg>Imprint</button>
+  <nav id="actions" class="actions">
+    <div id="menu" class="menu">
+      <button id="projects-button" class="btn" style="--i:2" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Projects</button>
+      <a id="github-link" class="btn" style="--i:1" href="https://github.com/sunken-dev/" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4M9 18c-4.51 2-5-2-7-2"/></svg>GitHub</a>
+      <button id="imprint" class="btn" style="--i:0" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7ZM14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/></svg>Imprint</button>
+    </div>
+    <button id="menu-toggle" class="btn menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line class="bar-top" x1="4" y1="6" x2="20" y2="6"/><line class="bar-mid" x1="4" y1="12" x2="20" y2="12"/><line class="bar-bottom" x1="4" y1="18" x2="20" y2="18"/></svg></button>
   </nav>
 
   <dialog id="imprint-dialog" aria-labelledby="imprint-title">
@@ -1306,6 +1407,85 @@
         if (event.target === panel) panel.close();
       });
     }
+
+    // Below the width the readouts leave free, the buttons fold into a menu.
+    // Layout properties cannot be animated between the two arrangements, so
+    // the bar fades out, switches while invisible, and fades back in.
+    const actions = document.getElementById('actions');
+    const menu = document.getElementById('menu');
+    const menuToggle = document.getElementById('menu-toggle');
+    const readout = document.querySelector('.hud-bl');
+    const SWAP_MS = 200;
+    let swapTimer = 0;
+
+    const setMenuOpen = (open) => {
+      actions.toggleAttribute('data-open', open);
+      menuToggle.setAttribute('aria-expanded', open);
+    };
+
+    const probe = menu.cloneNode(true);
+    probe.className = 'menu-probe';
+    probe.inert = true;
+    probe.removeAttribute('id');
+    for (const el of probe.querySelectorAll('[id]')) el.removeAttribute('id');
+    document.body.append(probe);
+
+    const wantedMode = () => {
+      const gap = parseFloat(getComputedStyle(probe).columnGap);
+      const rowWidth = probe.getBoundingClientRect().width;
+      const free = document.documentElement.clientWidth
+        - readout.getBoundingClientRect().right
+        - parseFloat(getComputedStyle(actions).right)
+        - gap * 2;
+      return rowWidth > free ? 'menu' : 'bar';
+    };
+
+    const applyMode = (animate) => {
+      clearTimeout(swapTimer);
+      const mode = wantedMode();
+      if (mode === (actions.dataset.mode || 'bar')) {
+        actions.removeAttribute('data-swapping');
+        return;
+      }
+      const commit = () => {
+        setMenuOpen(false);
+        actions.dataset.mode = mode;
+        actions.removeAttribute('data-swapping');
+      };
+      if (!animate) return commit();
+      actions.setAttribute('data-swapping', '');
+      swapTimer = setTimeout(() => {
+        commit();
+        applyMode(true);
+      }, SWAP_MS);
+    };
+
+    menuToggle.addEventListener('click', () => setMenuOpen(!actions.hasAttribute('data-open')));
+    menu.addEventListener('click', () => setMenuOpen(false));
+
+    // The pointer is allowed a moment off the bar so a slightly wide swing
+    // between buttons does not fold it.
+    let leaveTimer = 0;
+    actions.addEventListener('pointerenter', () => clearTimeout(leaveTimer));
+    actions.addEventListener('pointerleave', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      leaveTimer = setTimeout(() => setMenuOpen(false), 200);
+    });
+    addEventListener('pointerdown', (event) => {
+      if (!actions.contains(event.target)) setMenuOpen(false);
+    });
+    addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && actions.hasAttribute('data-open')) {
+        setMenuOpen(false);
+        menuToggle.focus();
+      }
+    });
+
+    const modeWatcher = new ResizeObserver(() => applyMode(true));
+    modeWatcher.observe(document.documentElement);
+    modeWatcher.observe(readout);
+    modeWatcher.observe(probe);
+    applyMode(false);
 
     const projectsButton = document.getElementById('projects-button');
     const GITHUB = document.getElementById('github-link').href;
