@@ -1502,8 +1502,6 @@
     // so it is only a fallback.
     const BUILT = 'https://raw.githubusercontent.com/sunken-dev/sunken-dev.github.io/data/projects.json';
     const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
-    // Repositories carrying this topic are not listed
-    const INTERNAL_TOPIC = 'internal';
     const CACHE = 'sunken:projects:v3';
     let loaded = false;
 
@@ -1677,14 +1675,29 @@
 
       // The REST API has no social-preview field, so this path can only point at
       // GitHub's generated card.
+      const isShown = async (repo) => {
+        try {
+          const response = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repo.name}/properties/values`,
+            { headers: { Accept: 'application/vnd.github+json' } });
+          if (!response.ok) return false;
+          const values = await response.json();
+          return values.some((value) => value.property_name === 'hidden' && value.value === 'false');
+        } catch (ignored) {
+          return false;
+        }
+      };
+
       const fromApi = async () => {
         const response = await fetch(REPOS, { headers: { Accept: 'application/vnd.github+json' } });
         if (!response.ok) throw new Error(response.status);
         const extra = await fetch('extra-projects.json').then((r) => (r.ok ? r.json() : []), () => []);
-        const own = (await response.json())
-          // forks are someone else's work, and this page is not a project
-          .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io'
-            && !(repo.topics || []).includes(INTERNAL_TOPIC))
+        // forks are someone else's work, and this page is not a project
+        const candidates = (await response.json())
+          .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io');
+        // only an explicit false shows a repository; a failed lookup hides it
+        const shown = await Promise.all(candidates.map(isShown));
+        const own = candidates
+          .filter((repo, index) => shown[index])
           .map((repo) => ({
             name: repo.name,
             description: repo.description,

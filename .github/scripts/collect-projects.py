@@ -23,8 +23,6 @@ ORG = "sunken-dev"
 SELF = "sunken-dev.github.io"
 OUTPUT = "projects.json"
 EXTRA = "extra-projects.json"
-# repositories carrying this topic are left out
-INTERNAL_TOPIC = "internal"
 TIMEOUT = 20
 
 OG_TAG = re.compile(r"""<meta[^>]*property=["']og:image["'][^>]*>""", re.I)
@@ -51,6 +49,26 @@ def social_preview(html):
     return content.group(1) if content else None
 
 
+def is_hidden(name, token):
+    """Whether the repository's `hidden` custom property is anything but false.
+
+    The organisation-wide values endpoint needs a member's token, so each
+    repository is asked directly, which public repositories answer to anyone.
+    A repository without an explicit false stays out of the list.
+    """
+    values = json.loads(
+        fetch(
+            f"https://api.github.com/repos/{ORG}/{name}/properties/values",
+            "application/vnd.github+json",
+            token,
+        )
+    )
+    return not any(
+        value["property_name"] == "hidden" and value["value"] == "false"
+        for value in values
+    )
+
+
 def collect(token):
     repos = json.loads(
         fetch(
@@ -65,7 +83,7 @@ def collect(token):
         # forks are someone else's work, and this site is not one of its projects
         if repo["fork"] or repo["name"] == SELF:
             continue
-        if INTERNAL_TOPIC in (repo.get("topics") or []):
+        if is_hidden(repo["name"], token):
             continue
 
         try:
