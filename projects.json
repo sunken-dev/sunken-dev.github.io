@@ -1,5 +1,25 @@
 [
   {
+    "name": "decascout",
+    "description": "Decathlon price comparison across countries, refreshed daily.",
+    "url": "https://github.com/sunken-dev/decascout",
+    "homepage": "http://decascout.sunken.dev/",
+    "image": "https://repository-images.githubusercontent.com/1412465972/c528d109-abf0-46a0-81b1-0a564e61fe10",
+    "topics": [
+      "ai-disclosure",
+      "price-tracker",
+      "sports"
+    ]
+  },
+  {
+    "name": ".github",
+    "description": "GitHub organization profile and settings for sunken-dev",
+    "url": "https://github.com/sunken-dev/.github",
+    "homepage": null,
+    "image": "https://opengraph.githubassets.com/b903c90d7a298c2e5db824a3195dd82af6f2486cada0ff4fd5ee57c2dede3066/sunken-dev/.github",
+    "topics": []
+  },
+  {
     "name": "welcome-to",
     "description": "A fan-made, browser implementation of Welcome To Your Perfect Home.",
     "url": "https://github.com/sunken-dev/welcome-to",
