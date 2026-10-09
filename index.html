@@ -874,6 +874,14 @@
       background: var(--cyan);
     }
 
+    .projects .divider {
+      display: block;
+      height: 1px;
+      padding: 0;
+      border: 0;
+      background: linear-gradient(90deg, transparent, #22e3ff59, transparent);
+    }
+
     .projects li {
       display: flex;
       gap: .7rem;
@@ -1550,8 +1558,11 @@
         status('No public projects yet.');
         return;
       }
-      const sorted = [...repos].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
-      const items = sorted.map((repo) => {
+      // Hand-listed projects follow the organisation's own, set off by a rule
+      const byName = (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+      const own = repos.filter((repo) => !repo.external).sort(byName);
+      const listed = repos.filter((repo) => repo.external).sort(byName);
+      const items = [...own, ...listed].map((repo) => {
         const li = document.createElement('li');
 
         // a repository without a social preview simply gets no thumbnail
@@ -1620,6 +1631,12 @@
 
       const placeholders = items.map(skeleton);
       projectsList.replaceChildren(...placeholders);
+      if (own.length && listed.length) {
+        const divider = document.createElement('li');
+        divider.className = 'divider';
+        divider.setAttribute('role', 'separator');
+        placeholders[own.length].before(divider);
+      }
       let pending = items.length;
       items.forEach((li, index) => {
         const shot = li.querySelector('.shot');
@@ -1663,7 +1680,8 @@
       const fromApi = async () => {
         const response = await fetch(REPOS, { headers: { Accept: 'application/vnd.github+json' } });
         if (!response.ok) throw new Error(response.status);
-        return (await response.json())
+        const extra = await fetch('extra-projects.json').then((r) => (r.ok ? r.json() : []), () => []);
+        const own = (await response.json())
           // forks are someone else's work, and this page is not a project
           .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io'
             && !(repo.topics || []).includes(INTERNAL_TOPIC))
@@ -1676,6 +1694,7 @@
               + encodeURIComponent(repo.owner.login) + '/' + encodeURIComponent(repo.name),
             topics: repo.topics || []
           }));
+        return [...own, ...extra.map((entry) => ({ topics: [], ...entry, external: true }))];
       };
 
       const fromBuild = async () => {

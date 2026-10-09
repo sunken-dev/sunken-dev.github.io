@@ -5,6 +5,11 @@ A repository's social preview only appears in the og:image tag of its public
 page - the same tag link scrapers read. The REST API does not carry it and the
 GraphQL field needs a token, so the tag is read here rather than in the browser,
 which cannot reach it because GitHub sends no CORS header on repository pages.
+
+Projects that do not live in the organisation are listed by hand in
+extra-projects.json: an array of objects with a required "name" and "url" and
+optional "description", "homepage", "image" and "topics". They are appended
+after the collected ones and marked "external" so the page can set them apart.
 """
 
 import json
@@ -17,6 +22,7 @@ import urllib.request
 ORG = "sunken-dev"
 SELF = "sunken-dev.github.io"
 OUTPUT = "projects.json"
+EXTRA = "extra-projects.json"
 # repositories carrying this topic are left out
 INTERNAL_TOPIC = "internal"
 TIMEOUT = 20
@@ -82,8 +88,26 @@ def collect(token):
     return projects
 
 
+def hand_picked():
+    with open(EXTRA, encoding="utf-8") as handle:
+        entries = json.load(handle)
+
+    return [
+        {
+            "name": entry["name"],
+            "description": entry.get("description"),
+            "url": entry["url"],
+            "homepage": entry.get("homepage"),
+            "image": entry.get("image"),
+            "topics": entry.get("topics") or [],
+            "external": True,
+        }
+        for entry in entries
+    ]
+
+
 def main():
-    projects = collect(os.environ.get("GH_TOKEN"))
+    projects = collect(os.environ.get("GH_TOKEN")) + hand_picked()
     with open(OUTPUT, "w", encoding="utf-8") as handle:
         json.dump(projects, handle, indent=2, ensure_ascii=False)
         handle.write("\n")
