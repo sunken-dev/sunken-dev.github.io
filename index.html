@@ -1502,7 +1502,8 @@
     // so it is only a fallback.
     const BUILT = 'https://raw.githubusercontent.com/sunken-dev/sunken-dev.github.io/data/projects.json';
     const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
-    const CACHE = 'sunken:projects:v3';
+    const CACHE = 'sunken:projects:v4';
+    const CACHE_TTL_MS = 5 * 60 * 1000;
     let loaded = false;
 
     const status = (text, href) => {
@@ -1664,9 +1665,9 @@
       showSkeletons(SKELETON_COUNT);
 
       try {
-        const cached = sessionStorage.getItem(CACHE);
-        if (cached) {
-          render(JSON.parse(cached));
+        const cached = JSON.parse(sessionStorage.getItem(CACHE));
+        if (cached && Date.now() - cached.at < CACHE_TTL_MS) {
+          render(cached.repos);
           return;
         }
       } catch (ignored) {
@@ -1711,7 +1712,9 @@
       };
 
       const fromBuild = async () => {
-        const response = await fetch(BUILT, { cache: 'no-cache' });
+        // raw.githubusercontent.com marks files max-age=300 and caches them at
+        // the edge; a changing query is a new URL, so it is fetched afresh.
+        const response = await fetch(`${BUILT}?t=${Math.floor(Date.now() / 60000)}`, { cache: 'no-cache' });
         if (!response.ok) return null;
         const repos = await response.json();
         return Array.isArray(repos) ? repos : null;
@@ -1720,7 +1723,7 @@
       try {
         const repos = (await fromBuild().catch(() => null)) || (await fromApi());
         try {
-          sessionStorage.setItem(CACHE, JSON.stringify(repos));
+          sessionStorage.setItem(CACHE, JSON.stringify({ at: Date.now(), repos }));
         } catch (ignored) {
           // caching is an optimisation, not a requirement
         }
