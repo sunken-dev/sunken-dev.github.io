@@ -1,5 +1,16 @@
 [
   {
+    "name": ".github",
+    "description": "GitHub organization profile and settings for sunken-dev",
+    "url": "https://github.com/sunken-dev/.github",
+    "homepage": null,
+    "image": "https://opengraph.githubassets.com/d229746dc29de39d55010cce3e5d1bb1a6525821c3e330fedb9d666255ddeaf7/sunken-dev/.github",
+    "topics": [
+      "github",
+      "organization"
+    ]
+  },
+  {
     "name": "decascout",
     "description": "Decathlon price comparison across countries, refreshed daily.",
     "url": "https://github.com/sunken-dev/decascout",
@@ -10,14 +21,6 @@
       "price-tracker",
       "sports"
     ]
-  },
-  {
-    "name": ".github",
-    "description": "GitHub organization profile and settings for sunken-dev",
-    "url": "https://github.com/sunken-dev/.github",
-    "homepage": null,
-    "image": "https://opengraph.githubassets.com/b903c90d7a298c2e5db824a3195dd82af6f2486cada0ff4fd5ee57c2dede3066/sunken-dev/.github",
-    "topics": []
   },
   {
     "name": "welcome-to",
@@ -52,5 +55,18 @@
       "security",
       "training"
     ]
+  },
+  {
+    "name": "hemeroc.github.io",
+    "description": "The personal website of Dominik Moser.",
+    "url": "https://github.com/hemeroc/hemeroc.github.io",
+    "homepage": "https://hemeroc.sunken.dev/",
+    "image": "https://opengraph.githubassets.com/d6c9ce15220de5d5139fc4e94e477214c719f74198373a31654006a117fd8309/hemeroc/hemeroc.github.io",
+    "topics": [
+      "blog",
+      "personal",
+      "website"
+    ],
+    "external": true
   }
 ]
