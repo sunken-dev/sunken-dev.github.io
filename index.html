@@ -876,10 +876,12 @@
 
     .projects .divider {
       display: block;
-      height: 1px;
+      height: 2px;
+      margin: .3rem 0;
       padding: 0;
       border: 0;
-      background: linear-gradient(90deg, transparent, #22e3ff59, transparent);
+      background: linear-gradient(90deg, transparent, var(--cyan) 20%, var(--cyan) 80%, transparent);
+      box-shadow: 0 0 10px color-mix(in oklab, var(--cyan) 70%, transparent);
     }
 
     .projects li {
