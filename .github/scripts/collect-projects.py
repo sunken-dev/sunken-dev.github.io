@@ -17,6 +17,8 @@ import urllib.request
 ORG = "sunken-dev"
 SELF = "sunken-dev.github.io"
 OUTPUT = "projects.json"
+# repositories carrying this topic are left out
+INTERNAL_TOPIC = "internal"
 TIMEOUT = 20
 
 OG_TAG = re.compile(r"""<meta[^>]*property=["']og:image["'][^>]*>""", re.I)
@@ -56,6 +58,8 @@ def collect(token):
     for repo in repos:
         # forks are someone else's work, and this site is not one of its projects
         if repo["fork"] or repo["name"] == SELF:
+            continue
+        if INTERNAL_TOPIC in (repo.get("topics") or []):
             continue
 
         try:

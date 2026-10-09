@@ -1494,6 +1494,8 @@
     // so it is only a fallback.
     const BUILT = 'https://raw.githubusercontent.com/sunken-dev/sunken-dev.github.io/data/projects.json';
     const REPOS = 'https://api.github.com/orgs/sunken-dev/repos?per_page=100&sort=updated';
+    // Repositories carrying this topic are not listed
+    const INTERNAL_TOPIC = 'internal';
     const CACHE = 'sunken:projects:v3';
     let loaded = false;
 
@@ -1663,7 +1665,8 @@
         if (!response.ok) throw new Error(response.status);
         return (await response.json())
           // forks are someone else's work, and this page is not a project
-          .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io')
+          .filter((repo) => !repo.fork && repo.name !== 'sunken-dev.github.io'
+            && !(repo.topics || []).includes(INTERNAL_TOPIC))
           .map((repo) => ({
             name: repo.name,
             description: repo.description,
