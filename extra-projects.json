@@ -16,5 +16,14 @@
     "homepage": "https://tamara-zalokar.eu/",
     "image": "https://tamara-zalokar.eu/og-image.png",
     "topics": ["architecture", "portfolio", "website"]
+  },
+  {
+    "name": "Ivy Poledance",
+    "group": "customer",
+    "description": "Pole dance courses, private lessons, workshops and performances in Vienna and the surrounding area.",
+    "url": "https://ivypoledance.at/",
+    "homepage": "https://ivypoledance.at/",
+    "image": "https://ivypoledance.at/processed_images/web.d7393c759e678a28.jpg",
+    "topics": ["poledance", "website"]
   }
 ]
