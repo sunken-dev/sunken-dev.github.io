@@ -56,6 +56,21 @@
       "personal",
       "website"
     ],
+    "group": "personal",
+    "external": true
+  },
+  {
+    "name": "Tamara Zalokar Architecture",
+    "description": "Architecture portfolio of Tamara Zalokar, M.Sc. Architecture, based in Vienna.",
+    "url": "https://tamara-zalokar.eu/",
+    "homepage": "https://tamara-zalokar.eu/",
+    "image": "https://tamara-zalokar.eu/og-image.png",
+    "topics": [
+      "architecture",
+      "portfolio",
+      "website"
+    ],
+    "group": "customer",
     "external": true
   }
 ]
