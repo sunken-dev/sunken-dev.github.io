@@ -1571,8 +1571,14 @@
 
         // a repository without a social preview simply gets no thumbnail
         if (repo.image) {
-          const frame = document.createElement('span');
+          // the picture opens the live page when there is one; the title link
+          // already names the project, so this one is skipped by keyboard and
+          // screen readers
+          const frame = document.createElement('a');
           frame.className = 'frame';
+          frame.href = repo.homepage || repo.url;
+          frame.tabIndex = -1;
+          frame.setAttribute('aria-hidden', 'true');
 
           const shot = document.createElement('img');
           shot.className = 'shot';
