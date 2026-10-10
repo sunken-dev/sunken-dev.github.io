@@ -8,8 +8,9 @@ which cannot reach it because GitHub sends no CORS header on repository pages.
 
 Projects that do not live in the organisation are listed by hand in
 extra-projects.json: an array of objects with a required "name" and "url" and
-optional "description", "homepage", "image" and "topics". They are appended
-after the collected ones and marked "external" so the page can set them apart.
+optional "description", "homepage", "image", "topics" and "group". They are
+appended after the collected ones and marked "external" so the page can set
+them apart; the page separates each group from the others with a rule.
 """
 
 import json
@@ -118,6 +119,7 @@ def hand_picked():
             "homepage": entry.get("homepage"),
             "image": entry.get("image"),
             "topics": entry.get("topics") or [],
+            "group": entry.get("group"),
             "external": True,
         }
         for entry in entries

@@ -1,10 +1,20 @@
 [
   {
     "name": "Dominik Moser",
+    "group": "personal",
     "description": "The personal website of Dominik Moser.",
     "url": "https://github.com/hemeroc/hemeroc.github.io",
     "homepage": "https://hemeroc.sunken.dev/",
     "image": "https://opengraph.githubassets.com/d6c9ce15220de5d5139fc4e94e477214c719f74198373a31654006a117fd8309/hemeroc/hemeroc.github.io",
     "topics": ["blog", "personal", "website"]
+  },
+  {
+    "name": "Tamara Zalokar Architecture",
+    "group": "customer",
+    "description": "Architecture portfolio of Tamara Zalokar, M.Sc. Architecture, based in Vienna.",
+    "url": "https://tamara-zalokar.eu/",
+    "homepage": "https://tamara-zalokar.eu/",
+    "image": "https://tamara-zalokar.eu/og-image.png",
+    "topics": ["architecture", "portfolio", "website"]
   }
 ]

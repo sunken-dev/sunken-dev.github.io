@@ -1559,11 +1559,14 @@
         status('No public projects yet.');
         return;
       }
-      // Hand-listed projects follow the organisation's own, set off by a rule
+      // Hand-listed projects follow the organisation's own, each group set off by a rule
       const byName = (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
       const own = repos.filter((repo) => !repo.external).sort(byName);
-      const listed = repos.filter((repo) => repo.external).sort(byName);
-      const items = [...own, ...listed].map((repo) => {
+      const groupOf = (repo) => repo.group || '';
+      const listed = repos.filter((repo) => repo.external)
+        .sort((a, b) => groupOf(a).localeCompare(groupOf(b), undefined, { sensitivity: 'base' }) || byName(a, b));
+      const ordered = [...own, ...listed];
+      const items = ordered.map((repo) => {
         const li = document.createElement('li');
 
         // a repository without a social preview simply gets no thumbnail
@@ -1632,12 +1635,15 @@
 
       const placeholders = items.map(skeleton);
       projectsList.replaceChildren(...placeholders);
-      if (own.length && listed.length) {
+      ordered.forEach((repo, index) => {
+        const previous = ordered[index - 1];
+        const startsGroup = repo.external && (!previous || !previous.external || groupOf(previous) !== groupOf(repo));
+        if (!startsGroup) return;
         const divider = document.createElement('li');
         divider.className = 'divider';
         divider.setAttribute('role', 'separator');
-        placeholders[own.length].before(divider);
-      }
+        placeholders[index].before(divider);
+      });
       let pending = items.length;
       items.forEach((li, index) => {
         const shot = li.querySelector('.shot');
