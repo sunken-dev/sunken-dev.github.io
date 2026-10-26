@@ -1,5 +1,16 @@
 [
   {
+    "name": "zero-hour",
+    "description": "A cooperative bomb defusal game for the browser. One of you inspects a 3D bomb case, the other reads the manual. Single-page, no dependencies, synthesised audio.",
+    "url": "https://github.com/sunken-dev/zero-hour",
+    "homepage": "http://zero-hour.sunken.dev/",
+    "image": "https://repository-images.githubusercontent.com/1433529629/c5740750-f3f0-42be-9d06-f93101093efb",
+    "topics": [
+      "ai-disclosure",
+      "game"
+    ]
+  },
+  {
     "name": "welcome-to",
     "description": "A fan-made, browser implementation of Welcome To Your Perfect Home.",
     "url": "https://github.com/sunken-dev/welcome-to",
