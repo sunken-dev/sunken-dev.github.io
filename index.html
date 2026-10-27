@@ -816,12 +816,12 @@
       }
     }
 
-    /* Centred and only as wide as the entries need */
+    /* Centred, with a definite width so the entry grid can work out how many
+       columns fit */
     #projects-dialog {
       inset: 0;
       margin: auto;
-      width: fit-content;
-      max-width: min(50rem, calc(100vw - 2rem));
+      width: min(60rem, calc(100vw - 2rem));
       height: fit-content;
       /* svh, not dvh: with a toolbar on screen the dynamic viewport is taller
          than what is actually visible, and a fixed panel sized to it spills
@@ -850,6 +850,8 @@
       padding: 0 .5rem 0 0;
       list-style: none;
       display: grid;
+      /* two columns where a card keeps a readable width, one below that */
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
       gap: .6rem;
       min-height: 0;
       overflow-y: auto;
@@ -875,6 +877,7 @@
     }
 
     .projects .divider {
+      grid-column: 1 / -1;
       display: block;
       height: 2px;
       margin: .3rem 0;
@@ -886,6 +889,7 @@
 
     .projects li {
       display: flex;
+      flex-direction: column;
       gap: .7rem;
       align-items: flex-start;
       padding: .6rem .7rem;
@@ -899,8 +903,8 @@
     .projects .frame {
       position: relative;
       flex: 0 0 auto;
-      width: clamp(11.5rem, 50vw, 21rem);
-      align-self: start;
+      width: 100%;
+      align-self: stretch;
       border: 1px solid #ffffff1a;
     }
 
@@ -929,12 +933,10 @@
       }
     }
 
-    /* min-width lets the text column shrink instead of overflowing the flex row */
     .projects .body {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      min-width: 0;
     }
 
     .projects h3 {
@@ -971,22 +973,6 @@
       padding: .28em 1em;
       background: #22e3ff16;
       color: #a9c6d8;
-    }
-
-    /* Side by side needs room for a readable preview and a readable column;
-       below that the entry stacks: preview, name, description, tags, live. */
-    /* Set well above phone width on purpose: Android display scaling widens
-       the CSS viewport, so a phone can report far more than its nominal size
-       and a tighter breakpoint would leave it side by side. */
-    @media (max-width: 40rem) {
-      .projects li {
-        flex-direction: column;
-      }
-
-      .projects .frame {
-        width: 100%;
-        align-self: stretch;
-      }
     }
 
     /* clip-path cuts off any glow on the element itself, so the halo lives on
