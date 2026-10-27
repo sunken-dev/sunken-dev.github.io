@@ -905,6 +905,12 @@
       border: 1px solid #ffffff1a;
     }
 
+    /* the frame is a link for the click, but its edge is not an underline */
+    .projects .frame:hover,
+    .projects .frame:focus-visible {
+      border-bottom-color: #ffffff1a;
+    }
+
     .projects .frame::after {
       content: "";
       position: absolute;
