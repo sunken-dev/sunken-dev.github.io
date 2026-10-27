@@ -821,7 +821,7 @@
       inset: 0;
       margin: auto;
       width: fit-content;
-      max-width: min(50rem, calc(100vw - 2rem));
+      max-width: min(54rem, calc(100vw - 2rem));
       height: fit-content;
       /* svh, not dvh: with a toolbar on screen the dynamic viewport is taller
          than what is actually visible, and a fixed panel sized to it spills
@@ -900,7 +900,7 @@
     .projects .frame {
       position: relative;
       flex: 0 0 auto;
-      width: clamp(11.5rem, 50vw, 21rem);
+      width: clamp(11.5rem, 50vw, 23rem);
       align-self: start;
       border: 1px solid #ffffff1a;
     }
@@ -994,11 +994,12 @@
       }
     }
 
-    /* A second column of entries only once each still has room for its
-       preview beside a readable text column */
-    @media (min-width: 75rem) {
+    /* A second column of entries only once each has room for a preview tall
+       enough to reach down to the Live plate beside a readable text column.
+       The preview keeps one fixed size; extra width goes to the text. */
+    @media (min-width: 100rem) {
       #projects-dialog {
-        width: min(96rem, calc(100vw - 2rem));
+        width: min(108rem, calc(100vw - 2rem));
         max-width: none;
       }
 
@@ -1007,7 +1008,7 @@
       }
 
       .projects .frame {
-        width: 50%;
+        width: 25rem;
       }
     }
 
