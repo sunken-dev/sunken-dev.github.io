@@ -933,7 +933,10 @@
       }
     }
 
+    /* The body fills the card, so the Live plate can sink to its bottom and
+       line up with the plates of the cards beside it. */
     .projects .body {
+      flex: 1 1 auto;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -975,12 +978,17 @@
       color: #a9c6d8;
     }
 
+    /* keeps the gap above the plate, which margin-top: auto would collapse */
+    .projects .body > :has(+ .live-wrap) {
+      margin-bottom: .7rem;
+    }
+
     /* clip-path cuts off any glow on the element itself, so the halo lives on
        a wrapper and the plate only changes its own fill. */
     .projects .live-wrap {
       align-self: start;
       display: inline-block;
-      margin-top: .7rem;
+      margin-top: auto;
       transition: filter .22s ease;
     }
 
