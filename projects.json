@@ -4,7 +4,7 @@
     "description": "A cooperative bomb defusal game for the browser. One of you inspects a 3D bomb case, the other reads the manual. Single-page, no dependencies, synthesised audio.",
     "url": "https://github.com/sunken-dev/zero-hour",
     "homepage": "http://zero-hour.sunken.dev/",
-    "image": "https://repository-images.githubusercontent.com/1433529629/c5740750-f3f0-42be-9d06-f93101093efb",
+    "image": null,
     "topics": [
       "ai-disclosure",
       "game"
@@ -15,7 +15,7 @@
     "description": "Unicorn Bank is a deliberately insecure mock online bank for hands-on web security training. Find the flaws, break in and move the money offshore. No real bank, no real money.",
     "url": "https://github.com/sunken-dev/unicorn-bank",
     "homepage": "http://unicorn-bank.sunken.dev/",
-    "image": "https://repository-images.githubusercontent.com/601638498/f2368a62-cf09-41c0-a42a-641e6f36490c",
+    "image": null,
     "topics": [
       "security",
       "training"
@@ -26,7 +26,7 @@
     "description": "A fan-made, browser implementation of Welcome To Your Perfect Home.",
     "url": "https://github.com/sunken-dev/welcome-to",
     "homepage": "http://welcome-to.sunken.dev/",
-    "image": "https://repository-images.githubusercontent.com/1318746651/68905970-528d-4f38-b758-61ead1b0e542",
+    "image": null,
     "topics": [
       "ai-disclosure",
       "boardgame"
@@ -37,7 +37,7 @@
     "description": "Everyone, one finger on the screen. A gentle nudge for who goes first.",
     "url": "https://github.com/sunken-dev/nudge",
     "homepage": "http://nudge.sunken.dev/",
-    "image": "https://repository-images.githubusercontent.com/1408665800/b9e8a864-2785-452c-8340-160612510e94",
+    "image": null,
     "topics": [
       "ai-disclosure",
       "boardgame",
